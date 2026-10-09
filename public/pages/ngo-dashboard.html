@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Dashboard – EcoTrack</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-brand" href="../index.html">
+    <div class="brand-icon">🌱</div>
+    <span><span class="brand-eco">Eco</span>Track</span>
+  </a>
+  <div class="nav-actions">
+    <div class="nav-user-info" id="nav-user-info" style="display:flex">
+      <div class="nav-avatar" id="nav-avatar">N</div>
+      <span id="nav-user-name" style="color:var(--gray-300);font-size:0.85rem;font-weight:600">NGO</span>
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="dashboard-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">N</div>
+        <div class="sidebar-user-info">
+          <div class="user-name" id="sidebar-user-name">NGO</div>
+          <div class="user-role">🤝 NGO</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+      <a href="#overview" class="sidebar-link active" onclick="showSection('overview', this)"><span class="link-icon">📊</span> Overview</a>
+      <a href="#available" class="sidebar-link" onclick="showSection('available', this)"><span class="link-icon">🍱</span> Available Food</a>
+      <a href="#my-requests" class="sidebar-link" onclick="showSection('my-requests', this)"><span class="link-icon">📋</span> My Requests</a>
+      <div class="sidebar-section-label">Platform</div>
+      <a href="impact-dashboard.html" class="sidebar-link"><span class="link-icon">🌍</span> Impact Dashboard</a>
+      <a href="#" class="sidebar-link" onclick="logout()"><span class="link-icon">🚪</span> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    <!-- OVERVIEW -->
+    <div id="section-overview" class="dashboard-section">
+      <div class="dashboard-header">
+        <div>
+          <h1 id="welcome-heading">Welcome! 👋</h1>
+          <p>Browse available food donations and request what your NGO needs</p>
+        </div>
+        <button class="btn btn-primary" onclick="showSection('available', document.querySelector('[onclick*=available]'))">
+          🍱 Browse Available Food
+        </button>
+      </div>
+      <div class="dashboard-content">
+        <div class="grid-4" style="margin-bottom:2rem">
+          <div class="stat-card">
+            <div class="stat-icon green">📋</div>
+            <div class="stat-info"><div class="stat-value" id="s-total-req">0</div><div class="stat-label">My Requests</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">⏳</div>
+            <div class="stat-info"><div class="stat-value" id="s-pending">0</div><div class="stat-label">Pending</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">🚗</div>
+            <div class="stat-info"><div class="stat-value" id="s-in-transit">0</div><div class="stat-label">In Transit</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div class="stat-info"><div class="stat-value" id="s-received">0</div><div class="stat-label">Received</div></div>
+          </div>
+        </div>
+
+        <div class="section-title">📢 Latest Available Donations</div>
+        <div id="latest-available" class="grid-auto">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AVAILABLE FOOD -->
+    <div id="section-available" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div>
+          <h1>Available Food Donations 🍱</h1>
+          <p>Browse and request food donations from verified donors</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="loadAvailable()">🔄 Refresh</button>
+      </div>
+      <div class="dashboard-content">
+        <div class="filter-bar">
+          <input type="text" class="search-input" id="avail-search" placeholder="Search food name or city..." oninput="filterAvailable()">
+          <select class="filter-select" id="avail-category" onchange="filterAvailable()">
+            <option value="">All Categories</option>
+            <option value="cooked-food">🍲 Cooked Food</option>
+            <option value="raw-food">🥕 Raw Food</option>
+            <option value="vegetables">🥦 Vegetables</option>
+            <option value="fruits">🍎 Fruits</option>
+            <option value="bakery">🍞 Bakery</option>
+            <option value="dairy">🥛 Dairy</option>
+            <option value="packaged">📦 Packaged</option>
+            <option value="beverages">🥤 Beverages</option>
+            <option value="other">🍴 Other</option>
+          </select>
+          <select class="filter-select" id="avail-city" onchange="filterAvailable()">
+            <option value="">All Cities</option>
+          </select>
+        </div>
+        <div id="available-list" class="grid-auto">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY REQUESTS -->
+    <div id="section-my-requests" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div>
+          <h1>My Requests 📋</h1>
+          <p>Track all your donation requests and their status</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="loadMyRequests()">🔄 Refresh</button>
+      </div>
+      <div class="dashboard-content">
+        <div id="my-requests-list">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Donation Detail Modal -->
+<div class="modal-overlay" id="donation-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🍱 Donation Details</h3>
+      <button class="modal-close" onclick="closeModal('donation-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="donation-modal-body"></div>
+    <div class="modal-footer" id="donation-modal-footer"></div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="../js/app.js"></script>
+<script>
+  let currentUser = null;
+  let availableDonations = [];
+  let myRequests = [];
+  let selectedDonation = null;
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    currentUser = requireAuth('ngo');
+    if (!currentUser) return;
+    initSidebar(currentUser);
+    document.getElementById('welcome-heading').textContent = `Welcome, ${currentUser.name.split(' ')[0]}! 👋`;
+    document.getElementById('nav-user-name').textContent = currentUser.name.split(' ')[0];
+    document.getElementById('nav-avatar').textContent = currentUser.name.charAt(0);
+    await loadOverview();
+  });
+
+  function showSection(name, linkEl) {
+    document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(`section-${name}`).style.display = 'block';
+    if (linkEl) linkEl.classList.add('active');
+    if (name === 'available') loadAvailable();
+    if (name === 'my-requests') loadMyRequests();
+    if (name === 'overview') loadOverview();
+    document.querySelector('.sidebar')?.classList.remove('open');
+  }
+
+  async function loadOverview() {
+    const [availRes, reqRes] = await Promise.all([
+      apiRequest('GET', '/donations?status=available'),
+      apiRequest('GET', '/donations')
+    ]);
+
+    const allDons = reqRes.ok ? (reqRes.data.donations || []) : [];
+    myRequests = allDons.filter(d => d.requestedBy === currentUser.id);
+
+    document.getElementById('s-total-req').textContent = myRequests.length;
+    document.getElementById('s-pending').textContent = myRequests.filter(d => d.status === 'requested').length;
+    document.getElementById('s-in-transit').textContent = myRequests.filter(d => ['accepted','pickup_assigned','picked_up','delivered'].includes(d.status)).length;
+    document.getElementById('s-received').textContent = myRequests.filter(d => d.status === 'completed').length;
+
+    const latest = availRes.ok ? (availRes.data.donations || []).slice(0, 6) : [];
+    renderDonationCards(latest, 'latest-available', true);
+  }
+
+  async function loadAvailable() {
+    const container = document.getElementById('available-list');
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div>Loading...</div>`;
+    const { ok, data } = await apiRequest('GET', '/donations?status=available');
+    if (!ok) { container.innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div><h3>Error loading</h3></div>`; return; }
+    availableDonations = data.donations || [];
+
+    // Populate city filter
+    const cities = [...new Set(availableDonations.map(d => d.city).filter(Boolean))];
+    const citySelect = document.getElementById('avail-city');
+    if (citySelect) {
+      citySelect.innerHTML = `<option value="">All Cities</option>` + cities.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+    filterAvailable();
+  }
+
+  function filterAvailable() {
+    const search = document.getElementById('avail-search')?.value.toLowerCase() || '';
+    const cat = document.getElementById('avail-category')?.value || '';
+    const city = document.getElementById('avail-city')?.value || '';
+    let filtered = availableDonations;
+    if (search) filtered = filtered.filter(d => d.foodName.toLowerCase().includes(search) || d.city.toLowerCase().includes(search) || d.donorName.toLowerCase().includes(search));
+    if (cat) filtered = filtered.filter(d => d.category === cat);
+    if (city) filtered = filtered.filter(d => d.city === city);
+    renderDonationCards(filtered, 'available-list', true);
+  }
+
+  async function loadMyRequests() {
+    const container = document.getElementById('my-requests-list');
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div>Loading...</div>`;
+    const { ok, data } = await apiRequest('GET', '/donations');
+    if (!ok) return;
+    myRequests = (data.donations || []).filter(d => d.requestedBy === currentUser.id);
+
+    if (myRequests.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><h3>No requests yet</h3><p>Browse available food and send a request.</p></div>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Food Name</th><th>Category</th><th>Qty</th><th>Donor</th><th>City</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${myRequests.map(d => `
+              <tr>
+                <td><strong>${d.foodName}</strong></td>
+                <td>${categoryLabel(d.category)}</td>
+                <td>${d.quantity} ${d.unit}</td>
+                <td>${d.donorName}</td>
+                <td>📍 ${d.city}</td>
+                <td>${statusBadge(d.status)}</td>
+                <td style="font-size:0.8rem">${timeAgo(d.updatedAt)}</td>
+                <td><button class="btn btn-info btn-sm" onclick="viewDonation('${d.id}')">View</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function renderDonationCards(donations, containerId, showRequest = false) {
+    const container = document.getElementById(containerId);
+    if (!donations || donations.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">🍱</div><h3>No donations available</h3><p>Check back soon — donors add new listings regularly.</p></div>`;
+      return;
+    }
+    container.innerHTML = donations.map(d => `
+      <div class="donation-card">
+        <div class="donation-card-header">
+          <div>
+            <h4>${d.foodName}</h4>
+            <div style="font-size:0.78rem;color:var(--gray-500);margin-top:2px">${d.donorName}</div>
+          </div>
+          ${statusBadge(d.status)}
+        </div>
+        <div class="donation-card-body">
+          <div class="donation-meta">
+            <div class="donation-meta-item"><span class="icon">🏷️</span>${categoryLabel(d.category)}</div>
+            <div class="donation-meta-item"><span class="icon">⚖️</span>${d.quantity} ${d.unit}</div>
+            <div class="donation-meta-item"><span class="icon">📍</span>${d.city}</div>
+            <div class="donation-meta-item"><span class="icon">⏰</span>${formatDate(d.expiryDateTime)}</div>
+          </div>
+          ${d.description ? `<p style="font-size:0.82rem;color:var(--gray-500);margin-top:0.5rem">${d.description.substring(0, 80)}${d.description.length > 80 ? '...' : ''}</p>` : ''}
+        </div>
+        <div class="donation-card-footer">
+          <span style="font-size:0.78rem;color:var(--gray-500)">Added ${timeAgo(d.createdAt)}</span>
+          <div style="display:flex;gap:0.4rem">
+            <button class="btn btn-secondary btn-sm" onclick="viewDonation('${d.id}')">Details</button>
+            ${showRequest && d.status === 'available' ? `<button class="btn btn-primary btn-sm" onclick="requestDonation('${d.id}')">Request</button>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function requestDonation(donationId) {
+    if (!confirm('Send a request for this food donation?')) return;
+    const { ok, data } = await apiRequest('PATCH', `/donations/${donationId}/request`);
+    if (ok && data.success) {
+      showToast('✅ Request sent! Waiting for donor approval.', 'success');
+      closeModal('donation-modal');
+      await loadAvailable();
+      await loadOverview();
+    } else {
+      showToast(data.message || 'Request failed.', 'error');
+    }
+  }
+
+  async function viewDonation(donationId) {
+    const { ok, data } = await apiRequest('GET', `/donations/${donationId}`);
+    if (!ok) return;
+    const d = data.donation;
+    selectedDonation = d;
+
+    const body = document.getElementById('donation-modal-body');
+    body.innerHTML = `
+      <div style="display:grid;gap:0.85rem">
+        <div class="d-flex justify-between align-center">
+          <h4 style="font-size:1.15rem;font-weight:800">${d.foodName}</h4>
+          ${statusBadge(d.status)}
+        </div>
+        <div class="grid-2" style="gap:0.6rem">
+          <div style="padding:0.7rem;background:var(--gray-50);border-radius:8px"><div style="font-size:0.72rem;color:var(--gray-500);text-transform:uppercase;font-weight:700">Category</div><div style="font-weight:600;margin-top:0.2rem">${categoryLabel(d.category)}</div></div>
+          <div style="padding:0.7rem;background:var(--gray-50);border-radius:8px"><div style="font-size:0.72rem;color:var(--gray-500);text-transform:uppercase;font-weight:700">Quantity</div><div style="font-weight:600;margin-top:0.2rem">${d.quantity} ${d.unit}</div></div>
+          <div style="padding:0.7rem;background:var(--gray-50);border-radius:8px"><div style="font-size:0.72rem;color:var(--gray-500);text-transform:uppercase;font-weight:700">Donor</div><div style="font-weight:600;margin-top:0.2rem">${d.donorName}</div></div>
+          <div style="padding:0.7rem;background:var(--gray-50);border-radius:8px"><div style="font-size:0.72rem;color:var(--gray-500);text-transform:uppercase;font-weight:700">City</div><div style="font-weight:600;margin-top:0.2rem">📍 ${d.city}</div></div>
+        </div>
+        <div style="padding:0.7rem;background:var(--gray-50);border-radius:8px">
+          <div style="font-size:0.72rem;color:var(--gray-500);text-transform:uppercase;font-weight:700;margin-bottom:0.2rem">Pickup Address</div>
+          <div>${d.pickupAddress}</div>
+        </div>
+        <div style="padding:0.7rem;background:var(--gray-50);border-radius:8px">
+          <div style="font-size:0.72rem;color:var(--gray-500);text-transform:uppercase;font-weight:700;margin-bottom:0.2rem">Expires</div>
+          <div style="font-weight:600;color:var(--accent-red)">${formatDateTime(d.expiryDateTime)}</div>
+        </div>
+        ${d.description ? `<div style="padding:0.7rem;background:var(--gray-50);border-radius:8px"><div style="font-size:0.72rem;color:var(--gray-500);text-transform:uppercase;font-weight:700;margin-bottom:0.2rem">Description</div><div>${d.description}</div></div>` : ''}
+      </div>
+    `;
+
+    const footer = document.getElementById('donation-modal-footer');
+    footer.innerHTML = '';
+    if (d.status === 'available') {
+      footer.innerHTML = `
+        <button class="btn btn-secondary" onclick="closeModal('donation-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="requestDonation('${d.id}')">📬 Request This Donation</button>
+      `;
+    } else {
+      footer.innerHTML = `<button class="btn btn-secondary" onclick="closeModal('donation-modal')">Close</button>`;
+    }
+    openModal('donation-modal');
+  }
+
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

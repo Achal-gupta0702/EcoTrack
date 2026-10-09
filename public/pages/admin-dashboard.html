@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – EcoTrack</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-brand" href="../index.html">
+    <div class="brand-icon">🌱</div>
+    <span><span class="brand-eco">Eco</span>Track</span>
+  </a>
+  <div class="nav-actions">
+    <div class="nav-user-info" id="nav-user-info" style="display:flex">
+      <div class="nav-avatar" id="nav-avatar">A</div>
+      <span id="nav-user-name" style="color:var(--gray-300);font-size:0.85rem;font-weight:600">Admin</span>
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="dashboard-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="user-name" id="sidebar-user-name">Admin</div>
+          <div class="user-role">🛡️ ADMIN</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Dashboard</div>
+      <a href="#overview" class="sidebar-link active" onclick="showSection('overview', this)"><span class="link-icon">📊</span> Overview</a>
+      <a href="#users" class="sidebar-link" onclick="showSection('users', this)"><span class="link-icon">👥</span> All Users</a>
+      <a href="#donations" class="sidebar-link" onclick="showSection('donations', this)"><span class="link-icon">📦</span> All Donations</a>
+      <a href="#pickups" class="sidebar-link" onclick="showSection('pickups', this)"><span class="link-icon">🚗</span> All Pickups</a>
+      <div class="sidebar-section-label">Platform</div>
+      <a href="impact-dashboard.html" class="sidebar-link"><span class="link-icon">🌍</span> Impact Dashboard</a>
+      <a href="#" class="sidebar-link" onclick="logout()"><span class="link-icon">🚪</span> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    <!-- OVERVIEW -->
+    <div id="section-overview" class="dashboard-section">
+      <div class="dashboard-header">
+        <div>
+          <h1>🛡️ Admin Dashboard</h1>
+          <p>Complete platform overview and management</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="loadAll()">🔄 Refresh All</button>
+      </div>
+      <div class="dashboard-content">
+        <!-- Platform Stats -->
+        <div style="margin-bottom:1rem" class="section-title">📊 Platform Statistics</div>
+        <div class="grid-4" style="margin-bottom:2rem" id="admin-stats">
+          <div class="stat-card"><div class="stat-icon green">👥</div><div class="stat-info"><div class="stat-value" id="s-users">0</div><div class="stat-label">Total Users</div></div></div>
+          <div class="stat-card"><div class="stat-icon blue">📦</div><div class="stat-info"><div class="stat-value" id="s-donations">0</div><div class="stat-label">Total Donations</div></div></div>
+          <div class="stat-card"><div class="stat-icon orange">✅</div><div class="stat-info"><div class="stat-value" id="s-completed">0</div><div class="stat-label">Completed</div></div></div>
+          <div class="stat-card"><div class="stat-icon purple">⚖️</div><div class="stat-info"><div class="stat-value" id="s-kg">0</div><div class="stat-label">KG Redistributed</div></div></div>
+        </div>
+        <div class="grid-4" style="margin-bottom:2rem">
+          <div class="stat-card"><div class="stat-icon orange">🍱</div><div class="stat-info"><div class="stat-value" id="s-donors">0</div><div class="stat-label">Donors</div></div></div>
+          <div class="stat-card"><div class="stat-icon blue">🤝</div><div class="stat-info"><div class="stat-value" id="s-ngos">0</div><div class="stat-label">NGOs</div></div></div>
+          <div class="stat-card"><div class="stat-icon green">🚗</div><div class="stat-info"><div class="stat-value" id="s-volunteers">0</div><div class="stat-label">Volunteers</div></div></div>
+          <div class="stat-card"><div class="stat-icon red">🔄</div><div class="stat-info"><div class="stat-value" id="s-inprogress">0</div><div class="stat-label">In Progress</div></div></div>
+        </div>
+
+        <!-- Recent Donations -->
+        <div class="section-title">📋 Recent Donations</div>
+        <div id="recent-admin-donations" style="margin-bottom:2rem">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+
+        <!-- Recent Users -->
+        <div class="section-title">👥 Recent Users</div>
+        <div id="recent-users">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div id="section-users" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div><h1>👥 All Users</h1><p>Manage all registered users on the platform</p></div>
+        <button class="btn btn-secondary btn-sm" onclick="loadUsers()">🔄 Refresh</button>
+      </div>
+      <div class="dashboard-content">
+        <div class="filter-bar">
+          <input type="text" class="search-input" id="user-search" placeholder="Search by name or email..." oninput="filterUsers()">
+          <select class="filter-select" id="user-role-filter" onchange="filterUsers()">
+            <option value="">All Roles</option>
+            <option value="donor">Donors</option>
+            <option value="ngo">NGOs</option>
+            <option value="volunteer">Volunteers</option>
+            <option value="admin">Admins</option>
+          </select>
+        </div>
+        <div id="users-list">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL DONATIONS -->
+    <div id="section-donations" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div><h1>📦 All Donations</h1><p>View and manage all food donations on the platform</p></div>
+        <button class="btn btn-secondary btn-sm" onclick="loadDonations()">🔄 Refresh</button>
+      </div>
+      <div class="dashboard-content">
+        <div class="filter-bar">
+          <input type="text" class="search-input" id="don-search" placeholder="Search by food or donor..." oninput="filterDonations()">
+          <select class="filter-select" id="don-status" onchange="filterDonations()">
+            <option value="">All Statuses</option>
+            <option value="available">Available</option>
+            <option value="requested">Requested</option>
+            <option value="accepted">Accepted</option>
+            <option value="pickup_assigned">Pickup Assigned</option>
+            <option value="picked_up">Picked Up</option>
+            <option value="delivered">Delivered</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+        <div id="donations-list">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL PICKUPS -->
+    <div id="section-pickups" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div><h1>🚗 All Pickups</h1><p>View all volunteer pickup records</p></div>
+        <button class="btn btn-secondary btn-sm" onclick="loadPickups()">🔄 Refresh</button>
+      </div>
+      <div class="dashboard-content">
+        <div id="pickups-list">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container"></div>
+<script src="../js/app.js"></script>
+<script>
+  let currentUser = null;
+  let allUsers = [];
+  let allDonations = [];
+  let allPickups = [];
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    currentUser = requireAuth('admin');
+    if (!currentUser) return;
+    initSidebar(currentUser);
+    document.getElementById('nav-user-name').textContent = 'Admin';
+    document.getElementById('nav-avatar').textContent = 'A';
+    await loadAll();
+  });
+
+  function showSection(name, linkEl) {
+    document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(`section-${name}`).style.display = 'block';
+    if (linkEl) linkEl.classList.add('active');
+    if (name === 'users') loadUsers();
+    if (name === 'donations') loadDonations();
+    if (name === 'pickups') loadPickups();
+    if (name === 'overview') loadAll();
+    document.querySelector('.sidebar')?.classList.remove('open');
+  }
+
+  async function loadAll() {
+    const [impactRes, usersRes, donRes] = await Promise.all([
+      fetch('/api/impact').then(r => r.json()),
+      apiRequest('GET', '/users'),
+      apiRequest('GET', '/donations')
+    ]);
+
+    if (impactRes.stats) {
+      const s = impactRes.stats;
+      document.getElementById('s-users').textContent = s.totalUsers;
+      document.getElementById('s-donations').textContent = s.totalDonations;
+      document.getElementById('s-completed').textContent = s.completedDonations;
+      document.getElementById('s-kg').textContent = s.foodRedistributed;
+      document.getElementById('s-donors').textContent = s.donors;
+      document.getElementById('s-ngos').textContent = s.ngos;
+      document.getElementById('s-volunteers').textContent = s.volunteers;
+      document.getElementById('s-inprogress').textContent = s.inProgressDonations;
+    }
+
+    allUsers = usersRes.ok ? (usersRes.data.users || []) : [];
+    allDonations = donRes.ok ? (donRes.data.donations || []) : [];
+
+    // Recent donations (last 8)
+    renderAdminDonations(allDonations.slice(0, 8), 'recent-admin-donations');
+
+    // Recent users (last 8)
+    renderUsersTable(allUsers.slice(0, 8), 'recent-users', false);
+  }
+
+  async function loadUsers() {
+    const container = document.getElementById('users-list');
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
+    const { ok, data } = await apiRequest('GET', '/users');
+    if (!ok) return;
+    allUsers = data.users || [];
+    filterUsers();
+  }
+
+  function filterUsers() {
+    const search = document.getElementById('user-search')?.value.toLowerCase() || '';
+    const role = document.getElementById('user-role-filter')?.value || '';
+    let filtered = allUsers;
+    if (search) filtered = filtered.filter(u => u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search) || (u.city || '').toLowerCase().includes(search));
+    if (role) filtered = filtered.filter(u => u.role === role);
+    renderUsersTable(filtered, 'users-list', true);
+  }
+
+  function renderUsersTable(users, containerId, showActions) {
+    const container = document.getElementById(containerId);
+    if (!users || users.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><h3>No users found</h3></div>`;
+      return;
+    }
+    container.innerHTML = `
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Phone</th><th>City</th><th>Status</th><th>Joined</th>${showActions ? '<th>Actions</th>' : ''}</tr></thead>
+          <tbody>
+            ${users.map(u => `
+              <tr>
+                <td><strong>${u.name}</strong>${u.organization ? `<div style="font-size:0.75rem;color:var(--gray-500)">${u.organization}</div>` : ''}</td>
+                <td style="font-size:0.85rem">${u.email}</td>
+                <td><span class="badge badge-${u.role}">${u.role}</span></td>
+                <td style="font-size:0.85rem">${u.phone || '—'}</td>
+                <td>📍 ${u.city || '—'}</td>
+                <td>${u.isActive ? `<span class="badge badge-available">Active</span>` : `<span class="badge badge-requested">Inactive</span>`}</td>
+                <td style="font-size:0.8rem">${formatDate(u.createdAt)}</td>
+                ${showActions ? `<td><button class="btn btn-sm ${u.isActive ? 'btn-warning' : 'btn-primary'}" onclick="toggleUser('${u.id}')">${u.isActive ? 'Deactivate' : 'Activate'}</button></td>` : ''}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  async function toggleUser(userId) {
+    const { ok, data } = await apiRequest('PATCH', `/users/${userId}/toggle`);
+    if (ok && data.success) {
+      showToast(data.message, 'success');
+      await loadUsers();
+    } else {
+      showToast(data.message || 'Failed.', 'error');
+    }
+  }
+
+  async function loadDonations() {
+    const container = document.getElementById('donations-list');
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
+    const { ok, data } = await apiRequest('GET', '/donations');
+    if (!ok) return;
+    allDonations = data.donations || [];
+    filterDonations();
+  }
+
+  function filterDonations() {
+    const search = document.getElementById('don-search')?.value.toLowerCase() || '';
+    const status = document.getElementById('don-status')?.value || '';
+    let filtered = allDonations;
+    if (search) filtered = filtered.filter(d => d.foodName.toLowerCase().includes(search) || d.donorName.toLowerCase().includes(search));
+    if (status) filtered = filtered.filter(d => d.status === status);
+    renderAdminDonations(filtered, 'donations-list');
+  }
+
+  function renderAdminDonations(donations, containerId) {
+    const container = document.getElementById(containerId);
+    if (!donations || donations.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><h3>No donations found</h3></div>`;
+      return;
+    }
+    container.innerHTML = `
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Food Name</th><th>Category</th><th>Qty</th><th>Donor</th><th>NGO</th><th>Volunteer</th><th>Status</th><th>City</th><th>Date</th></tr></thead>
+          <tbody>
+            ${donations.map(d => `
+              <tr>
+                <td><strong>${d.foodName}</strong></td>
+                <td>${categoryLabel(d.category)}</td>
+                <td>${d.quantity} ${d.unit}</td>
+                <td style="font-size:0.82rem">${d.donorName}</td>
+                <td style="font-size:0.82rem">${d.requestedByName || '—'}</td>
+                <td style="font-size:0.82rem">${d.volunteerName || '—'}</td>
+                <td>${statusBadge(d.status)}</td>
+                <td>📍 ${d.city}</td>
+                <td style="font-size:0.8rem">${formatDate(d.createdAt)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  async function loadPickups() {
+    const container = document.getElementById('pickups-list');
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
+    const { ok, data } = await apiRequest('GET', '/pickups');
+    if (!ok) return;
+    allPickups = data.pickups || [];
+
+    if (allPickups.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">🚗</div><h3>No pickups yet</h3></div>`;
+      return;
+    }
+    container.innerHTML = `
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Food</th><th>Qty</th><th>Volunteer</th><th>Pickup From</th><th>Deliver To</th><th>Status</th><th>Assigned</th><th>Delivered</th></tr></thead>
+          <tbody>
+            ${allPickups.map(p => `
+              <tr>
+                <td><strong>${p.foodName}</strong></td>
+                <td>${p.quantity} ${p.unit}</td>
+                <td>${p.volunteerName}</td>
+                <td style="font-size:0.82rem">${p.pickupAddress}</td>
+                <td style="font-size:0.82rem">${p.deliveryAddress}</td>
+                <td>
+                  ${p.status === 'assigned' ? `<span class="badge badge-pickup_assigned">Assigned</span>` : ''}
+                  ${p.status === 'picked_up' ? `<span class="badge badge-picked_up">Picked Up</span>` : ''}
+                  ${p.status === 'delivered' || p.status === 'completed' ? `<span class="badge badge-completed">Delivered</span>` : ''}
+                </td>
+                <td style="font-size:0.8rem">${formatDate(p.assignedAt)}</td>
+                <td style="font-size:0.8rem">${p.deliveredAt ? formatDate(p.deliveredAt) : '—'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

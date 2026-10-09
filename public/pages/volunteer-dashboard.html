@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Dashboard – EcoTrack</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-brand" href="../index.html">
+    <div class="brand-icon">🌱</div>
+    <span><span class="brand-eco">Eco</span>Track</span>
+  </a>
+  <div class="nav-actions">
+    <div class="nav-user-info" id="nav-user-info" style="display:flex">
+      <div class="nav-avatar" id="nav-avatar">V</div>
+      <span id="nav-user-name" style="color:var(--gray-300);font-size:0.85rem;font-weight:600">Volunteer</span>
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="dashboard-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">V</div>
+        <div class="sidebar-user-info">
+          <div class="user-name" id="sidebar-user-name">Volunteer</div>
+          <div class="user-role">🚗 VOLUNTEER</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+      <a href="#overview" class="sidebar-link active" onclick="showSection('overview', this)"><span class="link-icon">📊</span> Overview</a>
+      <a href="#available-pickups" class="sidebar-link" onclick="showSection('available-pickups', this)"><span class="link-icon">📦</span> Available Pickups</a>
+      <a href="#my-tasks" class="sidebar-link" onclick="showSection('my-tasks', this)"><span class="link-icon">🚗</span> My Tasks</a>
+      <div class="sidebar-section-label">Platform</div>
+      <a href="impact-dashboard.html" class="sidebar-link"><span class="link-icon">🌍</span> Impact Dashboard</a>
+      <a href="#" class="sidebar-link" onclick="logout()"><span class="link-icon">🚪</span> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    <!-- OVERVIEW -->
+    <div id="section-overview" class="dashboard-section">
+      <div class="dashboard-header">
+        <div>
+          <h1 id="welcome-heading">Welcome, Volunteer! 🚗</h1>
+          <p>Pick up food donations and deliver them to NGOs in need</p>
+        </div>
+        <button class="btn btn-primary" onclick="showSection('available-pickups', document.querySelector('[onclick*=available-pickups]'))">
+          📦 View Available Pickups
+        </button>
+      </div>
+      <div class="dashboard-content">
+        <div class="grid-4" style="margin-bottom:2rem">
+          <div class="stat-card">
+            <div class="stat-icon blue">📋</div>
+            <div class="stat-info"><div class="stat-value" id="s-total">0</div><div class="stat-label">Total Tasks</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">🚗</div>
+            <div class="stat-info"><div class="stat-value" id="s-active">0</div><div class="stat-label">Active</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div class="stat-info"><div class="stat-value" id="s-completed">0</div><div class="stat-label">Completed</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple">⚖️</div>
+            <div class="stat-info"><div class="stat-value" id="s-kg">0</div><div class="stat-label">KG Delivered</div></div>
+          </div>
+        </div>
+
+        <!-- Active Task -->
+        <div class="section-title">🚗 Active Tasks</div>
+        <div id="active-tasks" style="margin-bottom:2rem">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+
+        <!-- Available pickups preview -->
+        <div class="section-title">📦 Available Pickups</div>
+        <div id="pickup-preview" class="grid-auto">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AVAILABLE PICKUPS -->
+    <div id="section-available-pickups" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div>
+          <h1>Available Pickups 📦</h1>
+          <p>Accept a task and help deliver food to NGOs</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="loadAvailablePickups()">🔄 Refresh</button>
+      </div>
+      <div class="dashboard-content">
+        <div id="available-pickups-list" class="grid-auto">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY TASKS -->
+    <div id="section-my-tasks" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div>
+          <h1>My Pickup Tasks 🚗</h1>
+          <p>Track and update your assigned pickup tasks</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="loadMyTasks()">🔄 Refresh</button>
+      </div>
+      <div class="dashboard-content">
+        <div id="my-tasks-list">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Task Detail Modal -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🚗 Pickup Task Details</h3>
+      <button class="modal-close" onclick="closeModal('task-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="task-modal-body"></div>
+    <div class="modal-footer" id="task-modal-footer"></div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="../js/app.js"></script>
+<script>
+  let currentUser = null;
+  let myPickups = [];
+  let availableForPickup = [];
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    currentUser = requireAuth('volunteer');
+    if (!currentUser) return;
+    initSidebar(currentUser);
+    document.getElementById('welcome-heading').textContent = `Welcome, ${currentUser.name.split(' ')[0]}! 🚗`;
+    document.getElementById('nav-user-name').textContent = currentUser.name.split(' ')[0];
+    document.getElementById('nav-avatar').textContent = currentUser.name.charAt(0);
+    await loadOverview();
+  });
+
+  function showSection(name, linkEl) {
+    document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(`section-${name}`).style.display = 'block';
+    if (linkEl) linkEl.classList.add('active');
+    if (name === 'available-pickups') loadAvailablePickups();
+    if (name === 'my-tasks') loadMyTasks();
+    if (name === 'overview') loadOverview();
+    document.querySelector('.sidebar')?.classList.remove('open');
+  }
+
+  async function loadOverview() {
+    const [myRes, availRes] = await Promise.all([
+      apiRequest('GET', '/pickups'),
+      apiRequest('GET', '/pickups/available')
+    ]);
+
+    myPickups = myRes.ok ? (myRes.data.pickups || []) : [];
+    availableForPickup = availRes.ok ? (availRes.data.donations || []) : [];
+
+    const active = myPickups.filter(p => p.status !== 'completed' && p.status !== 'delivered').length;
+    const completed = myPickups.filter(p => p.status === 'completed' || p.status === 'delivered').length;
+    const totalKg = myPickups.filter(p => p.status === 'completed' || p.status === 'delivered').reduce((sum, p) => sum + (p.quantity || 0), 0);
+
+    document.getElementById('s-total').textContent = myPickups.length;
+    document.getElementById('s-active').textContent = active;
+    document.getElementById('s-completed').textContent = completed;
+    document.getElementById('s-kg').textContent = totalKg.toFixed(1);
+
+    // Active tasks
+    const activeTasks = myPickups.filter(p => p.status !== 'completed' && p.status !== 'delivered');
+    renderActiveTask(activeTasks, 'active-tasks');
+
+    // Preview available pickups
+    renderAvailablePickupCards(availableForPickup.slice(0, 6), 'pickup-preview', false);
+  }
+
+  function renderActiveTask(tasks, containerId) {
+    const container = document.getElementById(containerId);
+    if (!tasks || tasks.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><h3>No active tasks</h3><p>Accept a pickup task to get started.</p></div>`;
+      return;
+    }
+    container.innerHTML = tasks.map(p => `
+      <div class="donation-card" style="border-left:4px solid var(--green-500)">
+        <div class="donation-card-header">
+          <div>
+            <h4>${p.foodName}</h4>
+            <div style="font-size:0.8rem;color:var(--gray-500)">For: <strong>${p.ngoName}</strong></div>
+          </div>
+          <span class="badge badge-pickup_assigned">🚗 Active</span>
+        </div>
+        <div class="donation-card-body">
+          <div class="donation-meta">
+            <div class="donation-meta-item"><span class="icon">⚖️</span>${p.quantity} ${p.unit}</div>
+            <div class="donation-meta-item"><span class="icon">📍</span>${p.pickupAddress}</div>
+            <div class="donation-meta-item"><span class="icon">🏁</span>${p.deliveryAddress}</div>
+            <div class="donation-meta-item"><span class="icon">👤</span>${p.donorName}</div>
+          </div>
+        </div>
+        <div class="donation-card-footer">
+          <span style="font-size:0.8rem;color:var(--gray-500)">Assigned ${timeAgo(p.assignedAt)}</span>
+          <div style="display:flex;gap:0.4rem">
+            ${p.status === 'assigned' ? `<button class="btn btn-warning btn-sm" onclick="markPickedUp('${p.id}')">📦 Mark Picked Up</button>` : ''}
+            ${p.status === 'picked_up' ? `<button class="btn btn-primary btn-sm" onclick="markDelivered('${p.id}')">🚚 Mark Delivered</button>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function loadAvailablePickups() {
+    const container = document.getElementById('available-pickups-list');
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div>Loading...</div>`;
+    const { ok, data } = await apiRequest('GET', '/pickups/available');
+    if (!ok) return;
+    availableForPickup = data.donations || [];
+    renderAvailablePickupCards(availableForPickup, 'available-pickups-list', true);
+  }
+
+  function renderAvailablePickupCards(donations, containerId, showAccept) {
+    const container = document.getElementById(containerId);
+    if (!donations || donations.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><h3>No pickups available</h3><p>Check back soon when donors have accepted NGO requests.</p></div>`;
+      return;
+    }
+    container.innerHTML = donations.map(d => `
+      <div class="donation-card">
+        <div class="donation-card-header">
+          <div>
+            <h4>${d.foodName}</h4>
+            <div style="font-size:0.78rem;color:var(--gray-500)">${d.donorName}</div>
+          </div>
+          <span class="badge badge-accepted">🔵 Ready</span>
+        </div>
+        <div class="donation-card-body">
+          <div class="donation-meta">
+            <div class="donation-meta-item"><span class="icon">🏷️</span>${categoryLabel(d.category)}</div>
+            <div class="donation-meta-item"><span class="icon">⚖️</span>${d.quantity} ${d.unit}</div>
+            <div class="donation-meta-item"><span class="icon">📍</span>${d.city}</div>
+            <div class="donation-meta-item"><span class="icon">🤝</span>${d.requestedByName || 'NGO'}</div>
+          </div>
+          <div style="font-size:0.82rem;color:var(--gray-600);margin-top:0.6rem">
+            <strong>Pickup:</strong> ${d.pickupAddress}
+          </div>
+        </div>
+        <div class="donation-card-footer">
+          <span style="font-size:0.78rem;color:var(--gray-500)">Listed ${timeAgo(d.createdAt)}</span>
+          ${showAccept ? `<button class="btn btn-primary btn-sm" onclick="acceptPickup('${d.id}')">✅ Accept Pickup</button>` : `<button class="btn btn-secondary btn-sm" onclick="showSection('available-pickups', document.querySelector('[onclick*=available-pickups]'))">View All</button>`}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function loadMyTasks() {
+    const container = document.getElementById('my-tasks-list');
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div>Loading...</div>`;
+    const { ok, data } = await apiRequest('GET', '/pickups');
+    if (!ok) return;
+    myPickups = data.pickups || [];
+
+    if (myPickups.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">🚗</div><h3>No tasks yet</h3><p>Accept a pickup task to start helping.</p></div>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Food</th><th>Qty</th><th>Pickup From</th><th>Deliver To</th><th>Status</th><th>Assigned</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${myPickups.map(p => `
+              <tr>
+                <td><strong>${p.foodName}</strong><div style="font-size:0.78rem;color:var(--gray-500)">${p.donorName}</div></td>
+                <td>${p.quantity} ${p.unit}</td>
+                <td style="font-size:0.82rem">${p.pickupAddress}</td>
+                <td style="font-size:0.82rem">${p.deliveryAddress}</td>
+                <td>
+                  ${p.status === 'assigned' ? `<span class="badge badge-pickup_assigned">🚗 Assigned</span>` : ''}
+                  ${p.status === 'picked_up' ? `<span class="badge badge-picked_up">📦 Picked Up</span>` : ''}
+                  ${p.status === 'delivered' || p.status === 'completed' ? `<span class="badge badge-completed">✅ Delivered</span>` : ''}
+                </td>
+                <td style="font-size:0.8rem">${formatDate(p.assignedAt)}</td>
+                <td>
+                  <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+                    ${p.status === 'assigned' ? `<button class="btn btn-warning btn-sm" onclick="markPickedUp('${p.id}')">Picked Up</button>` : ''}
+                    ${p.status === 'picked_up' ? `<button class="btn btn-primary btn-sm" onclick="markDelivered('${p.id}')">Delivered</button>` : ''}
+                    ${(p.status === 'delivered' || p.status === 'completed') ? `<span style="color:var(--green-600);font-weight:600;font-size:0.8rem">✅ Done</span>` : ''}
+                  </div>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  async function acceptPickup(donationId) {
+    if (!confirm('Accept this pickup task? You will be responsible for collecting and delivering this food.')) return;
+    const { ok, data } = await apiRequest('POST', '/pickups/accept', { donationId });
+    if (ok && data.success) {
+      showToast('🎉 Pickup accepted! Please collect the food at the listed address.', 'success');
+      await loadOverview();
+      showSection('my-tasks', document.querySelector('[onclick*=my-tasks]'));
+    } else {
+      showToast(data.message || 'Failed to accept pickup.', 'error');
+    }
+  }
+
+  async function markPickedUp(pickupId) {
+    if (!confirm('Confirm that you have picked up the food?')) return;
+    const { ok, data } = await apiRequest('PATCH', `/pickups/${pickupId}/pickup`);
+    if (ok && data.success) {
+      showToast('📦 Marked as picked up! Now deliver to the NGO.', 'success');
+      await loadMyTasks();
+      await loadOverview();
+    } else {
+      showToast(data.message || 'Update failed.', 'error');
+    }
+  }
+
+  async function markDelivered(pickupId) {
+    if (!confirm('Confirm that you have delivered the food to the NGO?')) return;
+    const { ok, data } = await apiRequest('PATCH', `/pickups/${pickupId}/deliver`);
+    if (ok && data.success) {
+      showToast('🎉 Delivered! Thank you for making a difference!', 'success');
+      await loadMyTasks();
+      await loadOverview();
+    } else {
+      showToast(data.message || 'Update failed.', 'error');
+    }
+  }
+
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

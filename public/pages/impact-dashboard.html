@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impact Dashboard – EcoTrack</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+  <style>
+    .impact-hero {
+      background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 60%, var(--green-900) 100%);
+      padding: 130px 2rem 60px;
+      text-align: center;
+    }
+    .big-number { font-size: 4rem; font-weight: 900; color: var(--green-400); line-height: 1; }
+    .big-label { font-size: 0.9rem; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.3rem; }
+    .impact-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.5rem; }
+    .impact-metric-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .impact-metric-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .metric-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .metric-value { font-size: 2.4rem; font-weight: 900; color: var(--green-700); line-height: 1; margin-bottom: 0.3rem; }
+    .metric-label { font-size: 0.78rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; }
+    .category-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+    .category-name { font-size: 0.875rem; color: var(--gray-700); min-width: 120px; }
+    .category-progress { flex: 1; height: 10px; background: var(--gray-100); border-radius: 50px; overflow: hidden; }
+    .category-fill { height: 100%; background: linear-gradient(90deg, var(--green-600), var(--green-400)); border-radius: 50px; transition: width 1s ease; }
+    .category-count { font-size: 0.82rem; font-weight: 700; color: var(--green-700); min-width: 30px; text-align: right; }
+    @media (max-width: 1000px) { .impact-grid-6 { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .impact-grid-6 { grid-template-columns: repeat(2, 1fr); } .big-number { font-size: 2.5rem; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a class="nav-brand" href="../index.html">
+    <div class="brand-icon">🌱</div>
+    <span><span class="brand-eco">Eco</span>Track</span>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="how-it-works.html">How It Works</a>
+    <a href="impact-dashboard.html" class="active">Impact</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-user-info" id="nav-user-info" style="display:none">
+      <div class="nav-avatar" id="nav-avatar">U</div>
+      <span id="nav-user-name" style="color:var(--gray-300);font-size:0.85rem;font-weight:600"></span>
+    </div>
+    <a href="#" class="btn btn-secondary btn-sm" id="nav-dashboard-btn" style="display:none">Dashboard</a>
+    <button class="btn btn-danger btn-sm" id="nav-logout-btn" style="display:none" onclick="logout()">Logout</button>
+    <a href="login.html" class="btn btn-secondary btn-sm" id="nav-login-btn">Login</a>
+    <a href="register.html" class="btn btn-primary btn-sm" id="nav-register-btn">Get Started</a>
+  </div>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../index.html">🏠 Home</a>
+  <a href="about.html">ℹ️ About</a>
+  <a href="how-it-works.html">⚙️ How It Works</a>
+  <a href="impact-dashboard.html">📊 Impact</a>
+  <a href="login.html">🔐 Login</a>
+  <a href="register.html">📝 Register</a>
+</div>
+
+<!-- Hero -->
+<div class="impact-hero">
+  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);color:var(--green-400);padding:0.4rem 1rem;border-radius:50px;font-size:0.82rem;font-weight:600;margin-bottom:1.5rem;letter-spacing:0.03em">
+    📊 Live Impact Statistics — Updated in Real Time
+  </div>
+  <h1 style="font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:white;margin-bottom:0.75rem">EcoTrack <span style="color:var(--green-400)">Impact</span> Dashboard</h1>
+  <p style="color:rgba(255,255,255,0.65);font-size:1.05rem;max-width:560px;margin:0 auto 2.5rem">Real numbers. Real impact. Every kilogram of food saved from waste is a meal on someone's plate.</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);max-width:600px;margin:0 auto;gap:1rem">
+    <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:1.5rem">
+      <div class="big-number" id="hero-kg">—</div>
+      <div class="big-label">KG Redistributed</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:1.5rem">
+      <div class="big-number" id="hero-meals">—</div>
+      <div class="big-label">Meals Enabled</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:1.5rem">
+      <div class="big-number" id="hero-completed">—</div>
+      <div class="big-label">Completed</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Metrics -->
+<section class="section section-light">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">📊 Platform Metrics</span>
+      <h2>Our Numbers Tell the Story</h2>
+      <p>Every statistic below represents real food saved, real people helped, and real community impact created.</p>
+    </div>
+    <div class="impact-grid-6" id="metrics-grid">
+      <div class="loading-spinner" style="grid-column:span 6"><div class="spinner"></div>Loading metrics...</div>
+    </div>
+  </div>
+</section>
+
+<!-- Donation Status Breakdown -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2" style="gap:2rem">
+      <!-- Category Breakdown -->
+      <div>
+        <div class="section-title">🏷️ Food Category Breakdown</div>
+        <div class="chart-container">
+          <h4>Donations by Category</h4>
+          <div id="category-breakdown">
+            <div class="loading-spinner"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Monthly Trend -->
+      <div>
+        <div class="section-title">📈 Monthly Donation Trend</div>
+        <div class="chart-container">
+          <h4>Donations per Month (Last 6 Months)</h4>
+          <div id="monthly-chart">
+            <div class="loading-spinner"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Status Breakdown -->
+<section class="section section-light">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">🔄 Donation Pipeline</span>
+      <h2>Status Breakdown</h2>
+      <p>How donations are currently distributed across the 7-stage pipeline.</p>
+    </div>
+    <div id="status-breakdown" class="grid-4">
+      <div class="loading-spinner" style="grid-column:span 4"><div class="spinner"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Community Growth -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">👥 Community</span>
+      <h2>Our Growing Community</h2>
+      <p>EcoTrack is powered by a growing network of donors, NGOs, and volunteers across India.</p>
+    </div>
+    <div class="grid-3" id="community-stats">
+      <div class="loading-spinner" style="grid-column:span 3"><div class="spinner"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Environmental Impact -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">🌍 Environmental Impact</span>
+      <h2>Beyond Food — Saving the Planet</h2>
+      <p>Every kilogram of food saved from landfill prevents greenhouse gas emissions and conserves resources.</p>
+    </div>
+    <div class="grid-3" id="env-impact">
+      <div class="stat-card">
+        <div class="stat-icon green">🌡️</div>
+        <div class="stat-info">
+          <div class="stat-value" id="co2-saved">0 kg</div>
+          <div class="stat-label">CO₂ Equivalent Prevented</div>
+          <div class="stat-change up" id="co2-note">Based on food redistributed</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue">💧</div>
+        <div class="stat-info">
+          <div class="stat-value" id="water-saved">0 L</div>
+          <div class="stat-label">Water Equivalent Saved</div>
+          <div class="stat-change up">~1000L per kg of food</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">⚡</div>
+        <div class="stat-info">
+          <div class="stat-value" id="land-saved">0 m²</div>
+          <div class="stat-label">Land Use Prevented</div>
+          <div class="stat-change up">~10m² per kg of food</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-green" style="text-align:center">
+  <div class="container">
+    <h2 style="color:white;font-size:2rem;font-weight:900;margin-bottom:1rem">Add to These Numbers</h2>
+    <p style="color:rgba(255,255,255,0.8);max-width:500px;margin:0 auto 2rem">Every donation you make gets counted here. Be part of the impact story.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="register.html?role=donor" class="btn btn-xl" style="background:white;color:var(--green-700);font-weight:700">🍱 Start Donating</a>
+      <a href="register.html?role=volunteer" class="btn btn-xl btn-outline-white">🚗 Volunteer Now</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">🌱 EcoTrack</div>
+      <p>A smart food waste reduction and redistribution platform.</p>
+    </div>
+    <div class="footer-col"><h4>Platform</h4><ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="how-it-works.html">How It Works</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Join Us</h4><ul>
+      <li><a href="register.html">Register</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul></div>
+    <div class="footer-col"></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 EcoTrack. SDG 12 — Responsible Consumption and Production.</span>
+    <span>Made with 💚</span>
+  </div>
+</footer>
+
+<div id="toast-container"></div>
+<script src="../js/app.js"></script>
+<script>
+  const categoryNames = {
+    'cooked-food': '🍲 Cooked Food', 'raw-food': '🥕 Raw Food', 'vegetables': '🥦 Vegetables',
+    'fruits': '🍎 Fruits', 'bakery': '🍞 Bakery', 'dairy': '🥛 Dairy',
+    'packaged': '📦 Packaged', 'beverages': '🥤 Beverages', 'other': '🍴 Other'
+  };
+
+  async function loadImpact() {
+    const res = await fetch('/api/impact');
+    if (!res.ok) return;
+    const { stats } = await res.json();
+    if (!stats) return;
+
+    // Hero
+    document.getElementById('hero-kg').textContent = stats.foodRedistributed;
+    document.getElementById('hero-meals').textContent = stats.mealsProvided.toLocaleString('en-IN');
+    document.getElementById('hero-completed').textContent = stats.completedDonations;
+
+    // Main metrics
+    const metricsGrid = document.getElementById('metrics-grid');
+    const metrics = [
+      { icon: '📦', value: stats.totalDonations, label: 'Total Donations' },
+      { icon: '✅', value: stats.completedDonations, label: 'Completed' },
+      { icon: '🟢', value: stats.activeDonations, label: 'Available Now' },
+      { icon: '🔄', value: stats.inProgressDonations, label: 'In Progress' },
+      { icon: '⚖️', value: `${stats.foodRedistributed} kg`, label: 'KG Redistributed' },
+      { icon: '🍽️', value: stats.mealsProvided.toLocaleString('en-IN'), label: 'Meals Enabled' },
+    ];
+    metricsGrid.innerHTML = metrics.map(m => `
+      <div class="impact-metric-card">
+        <div class="metric-icon">${m.icon}</div>
+        <div class="metric-value">${m.value}</div>
+        <div class="metric-label">${m.label}</div>
+      </div>
+    `).join('');
+
+    // Category Breakdown
+    const catContainer = document.getElementById('category-breakdown');
+    const catEntries = Object.entries(stats.categoryBreakdown || {}).sort((a, b) => b[1] - a[1]);
+    const maxCat = Math.max(...catEntries.map(e => e[1]), 1);
+    if (catEntries.length === 0) {
+      catContainer.innerHTML = `<div class="empty-state"><div class="empty-icon">🏷️</div><h3>No data yet</h3></div>`;
+    } else {
+      catContainer.innerHTML = catEntries.map(([cat, count]) => `
+        <div class="category-bar">
+          <div class="category-name">${categoryNames[cat] || cat}</div>
+          <div class="category-progress">
+            <div class="category-fill" style="width:${(count / maxCat) * 100}%"></div>
+          </div>
+          <div class="category-count">${count}</div>
+        </div>
+      `).join('');
+    }
+
+    // Monthly chart
+    const monthly = stats.monthlyTrend || [];
+    const monthContainer = document.getElementById('monthly-chart');
+    if (monthly.length > 0) {
+      const max = Math.max(...monthly.map(m => m.count), 1);
+      monthContainer.innerHTML = `
+        <div class="bar-chart">
+          ${monthly.map(m => `
+            <div class="bar-item">
+              <div class="bar-value">${m.count}</div>
+              <div class="bar-fill" style="height:${Math.max((m.count / max) * 100, 4)}%"></div>
+              <div class="bar-label">${m.label}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } else {
+      monthContainer.innerHTML = `<div class="empty-state"><div class="empty-icon">📈</div><h3>No trend data yet</h3></div>`;
+    }
+
+    // Status Breakdown
+    const statusBreakdown = document.getElementById('status-breakdown');
+    const statuses = [
+      { key: 'available', label: 'Available', count: stats.activeDonations, icon: '🟢' },
+      { key: 'in-progress', label: 'In Progress', count: stats.inProgressDonations, icon: '🔄' },
+      { key: 'completed', label: 'Completed', count: stats.completedDonations, icon: '✅' },
+      { key: 'total', label: 'Total', count: stats.totalDonations, icon: '📦' },
+    ];
+    statusBreakdown.innerHTML = statuses.map(s => `
+      <div class="stat-card">
+        <div class="stat-icon ${s.key === 'available' ? 'green' : s.key === 'completed' ? 'green' : s.key === 'in-progress' ? 'orange' : 'blue'}">${s.icon}</div>
+        <div class="stat-info">
+          <div class="stat-value">${s.count}</div>
+          <div class="stat-label">${s.label}</div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width:${stats.totalDonations ? Math.round((s.count / stats.totalDonations) * 100) : 0}%"></div>
+          </div>
+          <div class="stat-change up" style="margin-top:0.3rem">${stats.totalDonations ? Math.round((s.count / stats.totalDonations) * 100) : 0}% of total</div>
+        </div>
+      </div>
+    `).join('');
+
+    // Community stats
+    const community = document.getElementById('community-stats');
+    community.innerHTML = `
+      <div class="feature-card" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1)">
+        <div class="feature-icon" style="background:rgba(243,156,18,0.15);border-color:rgba(243,156,18,0.25)">🍱</div>
+        <h3 style="color:white">Donors</h3>
+        <div style="font-size:3rem;font-weight:900;color:var(--accent-orange);margin:0.5rem 0">${stats.donors}</div>
+        <p style="color:rgba(255,255,255,0.55)">Restaurants, hotels, canteens & households sharing surplus food</p>
+      </div>
+      <div class="feature-card" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1)">
+        <div class="feature-icon" style="background:rgba(52,152,219,0.15);border-color:rgba(52,152,219,0.25)">🤝</div>
+        <h3 style="color:white">NGOs</h3>
+        <div style="font-size:3rem;font-weight:900;color:var(--accent-blue);margin:0.5rem 0">${stats.ngos}</div>
+        <p style="color:rgba(255,255,255,0.55)">Verified NGOs serving communities in need</p>
+      </div>
+      <div class="feature-card" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1)">
+        <div class="feature-icon" style="background:rgba(46,204,113,0.15);border-color:rgba(46,204,113,0.25)">🚗</div>
+        <h3 style="color:white">Volunteers</h3>
+        <div style="font-size:3rem;font-weight:900;color:var(--green-400);margin:0.5rem 0">${stats.volunteers}</div>
+        <p style="color:rgba(255,255,255,0.55)">Community volunteers completing last-mile delivery</p>
+      </div>
+    `;
+
+    // Environmental impact (rough estimates)
+    const kg = stats.foodRedistributed;
+    document.getElementById('co2-saved').textContent = `${(kg * 2.5).toFixed(0)} kg`;
+    document.getElementById('water-saved').textContent = `${(kg * 1000).toLocaleString('en-IN')} L`;
+    document.getElementById('land-saved').textContent = `${(kg * 10).toFixed(0)} m²`;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadImpact();
+    observeCounters();
+  });
+</script>
+</body>
+</html>

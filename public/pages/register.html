@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – EcoTrack</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+<nav class="navbar">
+  <a class="nav-brand" href="../index.html">
+    <div class="brand-icon">🌱</div>
+    <span><span class="brand-eco">Eco</span>Track</span>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="how-it-works.html">How It Works</a>
+  </div>
+  <div class="nav-actions">
+    <a href="login.html" class="btn btn-secondary btn-sm">Login</a>
+  </div>
+</nav>
+
+<div class="auth-page">
+  <div class="auth-container" style="max-width:980px">
+    <div class="auth-left">
+      <div class="brand">
+        <div class="brand-icon-lg">🌱</div>
+        <span class="brand-name">EcoTrack</span>
+      </div>
+      <h2>Join the Food Waste Revolution</h2>
+      <p>Register as a Donor, NGO, or Volunteer and become part of India's largest food redistribution network.</p>
+      <div class="auth-benefits">
+        <div class="auth-benefit"><div class="check">✓</div> Free to join, always</div>
+        <div class="auth-benefit"><div class="check">✓</div> Instant account activation</div>
+        <div class="auth-benefit"><div class="check">✓</div> Role-specific dashboard</div>
+        <div class="auth-benefit"><div class="check">✓</div> Real-time donation tracking</div>
+        <div class="auth-benefit"><div class="check">✓</div> Impact metrics & analytics</div>
+      </div>
+      <div style="margin-top:2rem;padding:1rem;background:rgba(255,255,255,0.08);border-radius:10px;border:1px solid rgba(255,255,255,0.12)">
+        <div style="font-size:0.78rem;color:rgba(255,255,255,0.7);line-height:2">
+          <div>🍱 <strong style="color:white">Donor</strong> — List surplus food from your restaurant, hotel, or home</div>
+          <div>🤝 <strong style="color:white">NGO</strong> — Request food donations for your community</div>
+          <div>🚗 <strong style="color:white">Volunteer</strong> — Help pick up and deliver food to those in need</div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-right" style="max-height:90vh">
+      <h3>Create Your Account</h3>
+      <p class="auth-subtitle">Fill in the details below to get started</p>
+
+      <div id="reg-alert" class="alert alert-hidden"></div>
+
+      <form id="register-form" novalidate>
+        <!-- Role Selector -->
+        <div class="form-group">
+          <label class="form-label">I am registering as <span style="color:var(--accent-red)">*</span></label>
+          <div class="role-selector">
+            <div>
+              <input type="radio" name="role" id="role-donor" value="donor" class="role-option">
+              <label for="role-donor" class="role-label">
+                <span class="role-icon">🍱</span>
+                <span class="role-name">Donor</span>
+              </label>
+            </div>
+            <div>
+              <input type="radio" name="role" id="role-ngo" value="ngo" class="role-option">
+              <label for="role-ngo" class="role-label">
+                <span class="role-icon">🤝</span>
+                <span class="role-name">NGO</span>
+              </label>
+            </div>
+            <div>
+              <input type="radio" name="role" id="role-volunteer" value="volunteer" class="role-option">
+              <label for="role-volunteer" class="role-label">
+                <span class="role-icon">🚗</span>
+                <span class="role-name">Volunteer</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-error" id="role-error">Please select a role.</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name <span style="color:var(--accent-red)">*</span></label>
+            <input type="text" id="reg-name" class="form-control" placeholder="Your full name" required>
+            <div class="form-error" id="name-error">Name is required.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number <span style="color:var(--accent-red)">*</span></label>
+            <input type="tel" id="reg-phone" class="form-control" placeholder="10-digit mobile number" required>
+            <div class="form-error" id="phone-error">Valid 10-digit phone required.</div>
+          </div>
+        </div>
+
+        <div class="form-group" id="org-group">
+          <label class="form-label">Organization Name <span id="org-required-star" style="color:var(--accent-red)">*</span></label>
+          <input type="text" id="reg-org" class="form-control" placeholder="Restaurant / NGO / Hospital name">
+          <div class="form-error" id="org-error">Organization name is required for donors and NGOs.</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email Address <span style="color:var(--accent-red)">*</span></label>
+            <input type="email" id="reg-email" class="form-control" placeholder="you@example.com" required autocomplete="email">
+            <div class="form-error" id="reg-email-error">Valid email is required.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">City <span style="color:var(--accent-red)">*</span></label>
+            <input type="text" id="reg-city" class="form-control" placeholder="e.g. Mumbai" required>
+            <div class="form-error" id="city-error">City is required.</div>
+          </div>
+        </div>
+
+        <div class="form-group" id="address-group">
+          <label class="form-label">Pickup Address <span id="addr-hint" style="color:var(--gray-500);font-weight:400">(optional for volunteers)</span></label>
+          <input type="text" id="reg-address" class="form-control" placeholder="Full address where food can be collected">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password <span style="color:var(--accent-red)">*</span></label>
+            <div style="position:relative">
+              <input type="password" id="reg-password" class="form-control" placeholder="Min. 6 characters" required style="padding-right:2.5rem">
+              <button type="button" onclick="togglePassword('reg-password', this)" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;color:var(--gray-400)">👁️</button>
+            </div>
+            <div class="form-error" id="reg-pass-error">Password must be at least 6 characters.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password <span style="color:var(--accent-red)">*</span></label>
+            <input type="password" id="reg-confirm" class="form-control" placeholder="Re-enter password" required>
+            <div class="form-error" id="confirm-error">Passwords do not match.</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="reg-btn" style="margin-top:0.5rem">
+          <span class="btn-text">Create Account →</span>
+        </button>
+      </form>
+
+      <div class="auth-switch">
+        Already have an account? <a href="login.html">Sign in here</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="../js/app.js"></script>
+<script>
+  // Pre-select role from URL param
+  const urlParams = new URLSearchParams(window.location.search);
+  const preRole = urlParams.get('role');
+  if (preRole) {
+    const roleInput = document.getElementById(`role-${preRole}`);
+    if (roleInput) roleInput.checked = true;
+  }
+
+  // Redirect if already logged in
+  const existingToken = localStorage.getItem('ecotrack_token');
+  if (existingToken && getUser()) window.location.href = getDashboardUrl(getUser().role);
+
+  function togglePassword(id, btn) {
+    const el = document.getElementById(id);
+    el.type = el.type === 'password' ? 'text' : 'password';
+    btn.textContent = el.type === 'password' ? '👁️' : '🙈';
+  }
+
+  // Update org field label based on role
+  document.querySelectorAll('.role-option').forEach(input => {
+    input.addEventListener('change', () => {
+      const star = document.getElementById('org-required-star');
+      const hint = document.getElementById('addr-hint');
+      if (input.value === 'volunteer') {
+        star.style.display = 'none';
+        if (hint) hint.textContent = '(optional)';
+        document.getElementById('reg-org').placeholder = 'Organization (optional)';
+      } else {
+        star.style.display = 'inline';
+        if (hint) hint.textContent = input.value === 'donor' ? '(for food pickup)' : '(optional)';
+        document.getElementById('reg-org').placeholder = input.value === 'donor' ? 'Restaurant / Hotel / Canteen name' : 'NGO / Organization name';
+      }
+    });
+  });
+
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Clear errors
+    ['role','name','phone','org','reg-email','city','reg-pass','confirm'].forEach(id => {
+      const errEl = document.getElementById(`${id}-error`);
+      if (errEl) errEl.classList.remove('show');
+    });
+
+    const role = document.querySelector('input[name="role"]:checked')?.value;
+    const name = document.getElementById('reg-name').value.trim();
+    const phone = document.getElementById('reg-phone').value.trim();
+    const org = document.getElementById('reg-org').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const city = document.getElementById('reg-city').value.trim();
+    const address = document.getElementById('reg-address').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const confirm = document.getElementById('reg-confirm').value;
+
+    let valid = true;
+
+    if (!role) { document.getElementById('role-error').classList.add('show'); valid = false; }
+    if (!name) { document.getElementById('name-error').classList.add('show'); document.getElementById('reg-name').classList.add('error'); valid = false; }
+    if (!phone || !/^[6-9]\d{9}$/.test(phone)) { document.getElementById('phone-error').classList.add('show'); document.getElementById('reg-phone').classList.add('error'); valid = false; }
+    if (role !== 'volunteer' && !org) { document.getElementById('org-error').classList.add('show'); document.getElementById('reg-org').classList.add('error'); valid = false; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('reg-email-error').classList.add('show'); document.getElementById('reg-email').classList.add('error'); valid = false; }
+    if (!city) { document.getElementById('city-error').classList.add('show'); document.getElementById('reg-city').classList.add('error'); valid = false; }
+    if (!password || password.length < 6) { document.getElementById('reg-pass-error').classList.add('show'); document.getElementById('reg-password').classList.add('error'); valid = false; }
+    if (password !== confirm) { document.getElementById('confirm-error').classList.add('show'); document.getElementById('reg-confirm').classList.add('error'); valid = false; }
+
+    if (!valid) return;
+
+    const btn = document.getElementById('reg-btn');
+    btn.classList.add('btn-loading');
+    btn.disabled = true;
+
+    const { ok, data } = await apiRequest('POST', '/auth/register', { name, email, password, role, phone, organization: org, city, address }, false);
+
+    btn.classList.remove('btn-loading');
+    btn.disabled = false;
+
+    if (ok && data.success) {
+      localStorage.setItem('ecotrack_token', data.token);
+      localStorage.setItem('ecotrack_user', JSON.stringify(data.user));
+      showAlert('reg-alert', `🎉 Account created! Welcome, ${data.user.name}! Redirecting to your dashboard...`, 'success');
+      setTimeout(() => window.location.href = getDashboardUrl(data.user.role), 1500);
+    } else {
+      showAlert('reg-alert', data.message || 'Registration failed. Please try again.', 'error');
+    }
+  });
+</script>
+</body>
+</html>

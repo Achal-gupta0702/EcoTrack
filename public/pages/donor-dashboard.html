@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Dashboard – EcoTrack</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+
+<!-- Top Navbar -->
+<nav class="navbar">
+  <a class="nav-brand" href="../index.html">
+    <div class="brand-icon">🌱</div>
+    <span><span class="brand-eco">Eco</span>Track</span>
+  </a>
+  <div class="nav-actions">
+    <div class="nav-user-info" id="nav-user-info" style="display:flex">
+      <div class="nav-avatar" id="nav-avatar">D</div>
+      <span id="nav-user-name" style="color:var(--gray-300);font-size:0.85rem;font-weight:600">Donor</span>
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- Layout -->
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">D</div>
+        <div class="sidebar-user-info">
+          <div class="user-name" id="sidebar-user-name">Donor</div>
+          <div class="user-role">🍱 DONOR</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+      <a href="#overview" class="sidebar-link active" onclick="showSection('overview', this)">
+        <span class="link-icon">📊</span> Overview
+      </a>
+      <a href="#add-donation" class="sidebar-link" onclick="showSection('add-donation', this)">
+        <span class="link-icon">➕</span> Add Donation
+      </a>
+      <a href="#my-donations" class="sidebar-link" onclick="showSection('my-donations', this)">
+        <span class="link-icon">📋</span> My Donations
+      </a>
+      <div class="sidebar-section-label">Platform</div>
+      <a href="impact-dashboard.html" class="sidebar-link">
+        <span class="link-icon">🌍</span> Impact Dashboard
+      </a>
+      <a href="how-it-works.html" class="sidebar-link">
+        <span class="link-icon">❓</span> How It Works
+      </a>
+      <a href="#" class="sidebar-link" onclick="logout()">
+        <span class="link-icon">🚪</span> Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- ========== OVERVIEW ========== -->
+    <div id="section-overview" class="dashboard-section">
+      <div class="dashboard-header">
+        <div>
+          <h1 id="welcome-heading">Welcome, Donor! 👋</h1>
+          <p>Manage your food donations and track their impact</p>
+        </div>
+        <button class="btn btn-primary" onclick="showSection('add-donation', document.querySelector('[onclick*=add-donation]'))">
+          ➕ Add New Donation
+        </button>
+      </div>
+      <div class="dashboard-content">
+        <!-- Stats -->
+        <div class="grid-4" style="margin-bottom:2rem" id="donor-stats">
+          <div class="stat-card">
+            <div class="stat-icon green">📦</div>
+            <div class="stat-info">
+              <div class="stat-value" id="s-total">0</div>
+              <div class="stat-label">Total Donations</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">⏳</div>
+            <div class="stat-info">
+              <div class="stat-value" id="s-active">0</div>
+              <div class="stat-label">Active / Available</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">🔄</div>
+            <div class="stat-info">
+              <div class="stat-value" id="s-inprogress">0</div>
+              <div class="stat-label">In Progress</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div class="stat-info">
+              <div class="stat-value" id="s-completed">0</div>
+              <div class="stat-label">Completed</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="section-title">🔔 Pending NGO Requests</div>
+        <div id="pending-requests" class="grid-auto" style="margin-bottom:2rem">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+
+        <!-- Recent Donations -->
+        <div class="section-title">📋 Recent Donations</div>
+        <div id="recent-donations">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ADD DONATION ========== -->
+    <div id="section-add-donation" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div>
+          <h1>Add New Donation ➕</h1>
+          <p>List your surplus food so NGOs can request it</p>
+        </div>
+      </div>
+      <div class="dashboard-content">
+        <div style="max-width:700px">
+          <div class="card">
+            <div class="card-header">
+              <h3>🍱 Donation Details</h3>
+            </div>
+            <div class="card-body">
+              <div id="donation-alert" class="alert alert-hidden"></div>
+              <form id="donation-form" novalidate>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Food Name <span style="color:var(--accent-red)">*</span></label>
+                    <input type="text" id="food-name" class="form-control" placeholder="e.g. Cooked Rice & Dal" required>
+                    <div class="form-error" id="fn-error">Food name is required.</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Category <span style="color:var(--accent-red)">*</span></label>
+                    <select id="food-category" class="form-control" required>
+                      <option value="">Select category</option>
+                      <option value="cooked-food">🍲 Cooked Food</option>
+                      <option value="raw-food">🥕 Raw Food</option>
+                      <option value="vegetables">🥦 Vegetables</option>
+                      <option value="fruits">🍎 Fruits</option>
+                      <option value="bakery">🍞 Bakery</option>
+                      <option value="dairy">🥛 Dairy</option>
+                      <option value="packaged">📦 Packaged</option>
+                      <option value="beverages">🥤 Beverages</option>
+                      <option value="other">🍴 Other</option>
+                    </select>
+                    <div class="form-error" id="cat-error">Category is required.</div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Quantity <span style="color:var(--accent-red)">*</span></label>
+                    <input type="number" id="food-quantity" class="form-control" placeholder="e.g. 10" min="0.1" step="0.1" required>
+                    <div class="form-error" id="qty-error">Valid quantity is required.</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Unit <span style="color:var(--accent-red)">*</span></label>
+                    <select id="food-unit" class="form-control" required>
+                      <option value="">Select unit</option>
+                      <option value="kg">Kilograms (kg)</option>
+                      <option value="litres">Litres</option>
+                      <option value="pieces">Pieces</option>
+                      <option value="boxes">Boxes</option>
+                      <option value="packets">Packets</option>
+                      <option value="plates">Plates / Servings</option>
+                    </select>
+                    <div class="form-error" id="unit-error">Unit is required.</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Expiry Date & Time <span style="color:var(--accent-red)">*</span></label>
+                  <input type="datetime-local" id="food-expiry" class="form-control" required>
+                  <div class="form-hint">Food must be picked up before this time</div>
+                  <div class="form-error" id="exp-error">Expiry date/time is required.</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Pickup Address <span style="color:var(--accent-red)">*</span></label>
+                  <input type="text" id="food-address" class="form-control" placeholder="Full address where food can be collected" required>
+                  <div class="form-error" id="addr-error">Pickup address is required.</div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">City <span style="color:var(--accent-red)">*</span></label>
+                    <input type="text" id="food-city" class="form-control" placeholder="e.g. Mumbai" required>
+                    <div class="form-error" id="city-error">City is required.</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Serves Approximately</label>
+                    <input type="number" id="food-serves" class="form-control" placeholder="Number of people" min="1">
+                    <div class="form-hint">Optional estimate</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Description</label>
+                  <textarea id="food-desc" class="form-control" placeholder="Additional details — allergens, freshness, packaging notes..."></textarea>
+                </div>
+
+                <div style="display:flex;gap:1rem">
+                  <button type="submit" class="btn btn-primary" id="add-donation-btn">
+                    <span class="btn-text">✅ Submit Donation</span>
+                  </button>
+                  <button type="button" class="btn btn-secondary" onclick="resetDonationForm()">Reset</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== MY DONATIONS ========== -->
+    <div id="section-my-donations" class="dashboard-section" style="display:none">
+      <div class="dashboard-header">
+        <div>
+          <h1>My Donations 📋</h1>
+          <p>All your food donations and their current status</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="loadMyDonations()">🔄 Refresh</button>
+      </div>
+      <div class="dashboard-content">
+        <div class="filter-bar">
+          <input type="text" class="search-input" id="don-search" placeholder="Search by food name..." oninput="filterDonations()">
+          <select class="filter-select" id="don-status-filter" onchange="filterDonations()">
+            <option value="">All Statuses</option>
+            <option value="available">Available</option>
+            <option value="requested">Requested</option>
+            <option value="accepted">Accepted</option>
+            <option value="pickup_assigned">Pickup Assigned</option>
+            <option value="picked_up">Picked Up</option>
+            <option value="delivered">Delivered</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+        <div id="my-donations-list">
+          <div class="loading-spinner"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Donation Detail Modal -->
+<div class="modal-overlay" id="donation-detail-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📋 Donation Details</h3>
+      <button class="modal-close" onclick="closeModal('donation-detail-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="donation-detail-body"></div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="../js/app.js"></script>
+<script>
+  let currentUser = null;
+  let allDonations = [];
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    currentUser = requireAuth('donor');
+    if (!currentUser) return;
+    initSidebar(currentUser);
+    document.getElementById('welcome-heading').textContent = `Welcome, ${currentUser.name.split(' ')[0]}! 👋`;
+    document.getElementById('nav-user-name').textContent = currentUser.name.split(' ')[0];
+    document.getElementById('nav-avatar').textContent = currentUser.name.charAt(0);
+
+    // Set min expiry to now
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('food-expiry').min = now.toISOString().slice(0, 16);
+
+    await loadOverview();
+  });
+
+  function showSection(name, linkEl) {
+    document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(`section-${name}`).style.display = 'block';
+    if (linkEl) linkEl.classList.add('active');
+
+    if (name === 'my-donations') loadMyDonations();
+    if (name === 'overview') loadOverview();
+
+    // Close sidebar on mobile
+    document.querySelector('.sidebar')?.classList.remove('open');
+  }
+
+  async function loadOverview() {
+    const { ok, data } = await apiRequest('GET', `/donations?donorId=${currentUser.id}`);
+    if (!ok) return;
+    allDonations = data.donations || [];
+
+    const total = allDonations.length;
+    const active = allDonations.filter(d => d.status === 'available').length;
+    const inprog = allDonations.filter(d => ['requested','accepted','pickup_assigned','picked_up','delivered'].includes(d.status)).length;
+    const completed = allDonations.filter(d => d.status === 'completed').length;
+
+    document.getElementById('s-total').textContent = total;
+    document.getElementById('s-active').textContent = active;
+    document.getElementById('s-inprogress').textContent = inprog;
+    document.getElementById('s-completed').textContent = completed;
+
+    // Pending requests
+    const pending = allDonations.filter(d => d.status === 'requested');
+    const pendingContainer = document.getElementById('pending-requests');
+    if (pending.length === 0) {
+      pendingContainer.innerHTML = `<div class="empty-state"><div class="empty-icon">🔔</div><h3>No pending requests</h3><p>NGOs haven't requested any of your donations yet.</p></div>`;
+    } else {
+      pendingContainer.innerHTML = pending.map(d => `
+        <div class="donation-card">
+          <div class="donation-card-header">
+            <div>
+              <h4>${d.foodName}</h4>
+              <div style="font-size:0.8rem;color:var(--gray-500);margin-top:0.2rem">Requested by: <strong>${d.requestedByName}</strong></div>
+            </div>
+            ${statusBadge('requested')}
+          </div>
+          <div class="donation-card-body">
+            <div class="donation-meta">
+              <div class="donation-meta-item"><span class="icon">⚖️</span>${d.quantity} ${d.unit}</div>
+              <div class="donation-meta-item"><span class="icon">📍</span>${d.city}</div>
+              <div class="donation-meta-item"><span class="icon">🏷️</span>${categoryLabel(d.category)}</div>
+              <div class="donation-meta-item"><span class="icon">🕐</span>${timeAgo(d.updatedAt)}</div>
+            </div>
+          </div>
+          <div class="donation-card-footer">
+            <span style="font-size:0.8rem;color:var(--gray-500)">Accept to proceed to pickup assignment</span>
+            <button class="btn btn-primary btn-sm" onclick="acceptRequest('${d.id}')">✅ Accept Request</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Recent donations (last 5)
+    const recent = allDonations.slice(0, 5);
+    renderDonationsTable(recent, 'recent-donations');
+  }
+
+  async function loadMyDonations() {
+    const container = document.getElementById('my-donations-list');
+    container.innerHTML = `<div class="loading-spinner"><div class="spinner"></div>Loading...</div>`;
+    const { ok, data } = await apiRequest('GET', `/donations?donorId=${currentUser.id}`);
+    if (!ok) { container.innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div><h3>Error loading donations</h3></div>`; return; }
+    allDonations = data.donations || [];
+    filterDonations();
+  }
+
+  function filterDonations() {
+    const search = document.getElementById('don-search')?.value.toLowerCase() || '';
+    const status = document.getElementById('don-status-filter')?.value || '';
+    let filtered = allDonations;
+    if (search) filtered = filtered.filter(d => d.foodName.toLowerCase().includes(search) || d.city.toLowerCase().includes(search));
+    if (status) filtered = filtered.filter(d => d.status === status);
+    renderDonationsTable(filtered, 'my-donations-list');
+  }
+
+  function renderDonationsTable(donations, containerId) {
+    const container = document.getElementById(containerId);
+    if (!donations || donations.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><h3>No donations found</h3><p>Add your first donation to get started.</p></div>`;
+      return;
+    }
+    container.innerHTML = `
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Food Name</th>
+              <th>Category</th>
+              <th>Qty</th>
+              <th>City</th>
+              <th>Expires</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${donations.map(d => `
+              <tr>
+                <td><strong>${d.foodName}</strong></td>
+                <td>${categoryLabel(d.category)}</td>
+                <td>${d.quantity} ${d.unit}</td>
+                <td>📍 ${d.city}</td>
+                <td style="font-size:0.8rem">${formatDateTime(d.expiryDateTime)}</td>
+                <td>${statusBadge(d.status)}</td>
+                <td>
+                  <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+                    <button class="btn btn-info btn-sm" onclick="viewDonationDetail('${d.id}')">View</button>
+                    ${d.status === 'requested' ? `<button class="btn btn-primary btn-sm" onclick="acceptRequest('${d.id}')">Accept</button>` : ''}
+                    ${d.status === 'available' ? `<button class="btn btn-danger btn-sm" onclick="deleteDonation('${d.id}')">Delete</button>` : ''}
+                  </div>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  async function acceptRequest(donationId) {
+    if (!confirm('Accept this NGO request and proceed to volunteer pickup?')) return;
+    const { ok, data } = await apiRequest('PATCH', `/donations/${donationId}/accept`);
+    if (ok && data.success) {
+      showToast('✅ Request accepted! A volunteer can now be assigned.', 'success');
+      await loadOverview();
+    } else {
+      showToast(data.message || 'Failed to accept request.', 'error');
+    }
+  }
+
+  async function deleteDonation(donationId) {
+    if (!confirm('Delete this donation? This cannot be undone.')) return;
+    const { ok, data } = await apiRequest('DELETE', `/donations/${donationId}`);
+    if (ok && data.success) {
+      showToast('Donation deleted.', 'success');
+      await loadMyDonations();
+      await loadOverview();
+    } else {
+      showToast(data.message || 'Failed to delete.', 'error');
+    }
+  }
+
+  async function viewDonationDetail(donationId) {
+    const donation = allDonations.find(d => d.id === donationId);
+    if (!donation) return;
+    const body = document.getElementById('donation-detail-body');
+    body.innerHTML = `
+      <div style="display:grid;gap:1rem">
+        <div class="d-flex justify-between align-center">
+          <h4 style="font-size:1.2rem">${donation.foodName}</h4>
+          ${statusBadge(donation.status)}
+        </div>
+        <div class="grid-2" style="gap:0.75rem">
+          <div style="padding:0.75rem;background:var(--gray-50);border-radius:8px">
+            <div style="font-size:0.75rem;color:var(--gray-500);text-transform:uppercase;font-weight:600">Category</div>
+            <div style="font-weight:600;margin-top:0.2rem">${categoryLabel(donation.category)}</div>
+          </div>
+          <div style="padding:0.75rem;background:var(--gray-50);border-radius:8px">
+            <div style="font-size:0.75rem;color:var(--gray-500);text-transform:uppercase;font-weight:600">Quantity</div>
+            <div style="font-weight:600;margin-top:0.2rem">${donation.quantity} ${donation.unit}</div>
+          </div>
+          <div style="padding:0.75rem;background:var(--gray-50);border-radius:8px">
+            <div style="font-size:0.75rem;color:var(--gray-500);text-transform:uppercase;font-weight:600">Expires</div>
+            <div style="font-weight:600;margin-top:0.2rem">${formatDateTime(donation.expiryDateTime)}</div>
+          </div>
+          <div style="padding:0.75rem;background:var(--gray-50);border-radius:8px">
+            <div style="font-size:0.75rem;color:var(--gray-500);text-transform:uppercase;font-weight:600">City</div>
+            <div style="font-weight:600;margin-top:0.2rem">${donation.city}</div>
+          </div>
+        </div>
+        <div style="padding:0.75rem;background:var(--gray-50);border-radius:8px">
+          <div style="font-size:0.75rem;color:var(--gray-500);text-transform:uppercase;font-weight:600;margin-bottom:0.3rem">Pickup Address</div>
+          <div>${donation.pickupAddress}</div>
+        </div>
+        ${donation.description ? `<div style="padding:0.75rem;background:var(--gray-50);border-radius:8px">
+          <div style="font-size:0.75rem;color:var(--gray-500);text-transform:uppercase;font-weight:600;margin-bottom:0.3rem">Description</div>
+          <div>${donation.description}</div>
+        </div>` : ''}
+        ${donation.requestedByName ? `<div style="padding:0.75rem;background:#fff3cd;border-radius:8px;border:1px solid #ffd600">
+          <div style="font-size:0.75rem;color:#856404;text-transform:uppercase;font-weight:600;margin-bottom:0.3rem">Requested By</div>
+          <div style="font-weight:600">${donation.requestedByName}</div>
+        </div>` : ''}
+        ${donation.volunteerName ? `<div style="padding:0.75rem;background:#d4edda;border-radius:8px">
+          <div style="font-size:0.75rem;color:#155724;text-transform:uppercase;font-weight:600;margin-bottom:0.3rem">Volunteer</div>
+          <div style="font-weight:600">${donation.volunteerName}</div>
+        </div>` : ''}
+        <div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--gray-700);margin-bottom:0.75rem">📍 Status History</div>
+          <div class="status-timeline">
+            ${donation.statusHistory.map((h, i) => `
+              <div class="timeline-item">
+                <div class="timeline-dot">✓</div>
+                <div class="timeline-content">
+                  <div class="tl-status">${h.status.replace('_', ' ').toUpperCase()}</div>
+                  <div class="tl-note">${h.note}</div>
+                  <div class="tl-time">${formatDateTime(h.timestamp)}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+    openModal('donation-detail-modal');
+  }
+
+  // Donation form submit
+  document.getElementById('donation-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    ['fn','cat','qty','unit','exp','addr','city'].forEach(id => {
+      document.getElementById(`${id}-error`)?.classList.remove('show');
+    });
+
+    const foodName = document.getElementById('food-name').value.trim();
+    const category = document.getElementById('food-category').value;
+    const quantity = document.getElementById('food-quantity').value;
+    const unit = document.getElementById('food-unit').value;
+    const expiryDateTime = document.getElementById('food-expiry').value;
+    const pickupAddress = document.getElementById('food-address').value.trim();
+    const city = document.getElementById('food-city').value.trim();
+    const description = document.getElementById('food-desc').value.trim();
+
+    let valid = true;
+    if (!foodName) { document.getElementById('fn-error').classList.add('show'); valid = false; }
+    if (!category) { document.getElementById('cat-error').classList.add('show'); valid = false; }
+    if (!quantity || quantity <= 0) { document.getElementById('qty-error').classList.add('show'); valid = false; }
+    if (!unit) { document.getElementById('unit-error').classList.add('show'); valid = false; }
+    if (!expiryDateTime) { document.getElementById('exp-error').classList.add('show'); valid = false; }
+    if (!pickupAddress) { document.getElementById('addr-error').classList.add('show'); valid = false; }
+    if (!city) { document.getElementById('city-error').classList.add('show'); valid = false; }
+    if (!valid) return;
+
+    const btn = document.getElementById('add-donation-btn');
+    btn.classList.add('btn-loading'); btn.disabled = true;
+
+    const { ok, data } = await apiRequest('POST', '/donations', {
+      foodName, category, quantity, unit, expiryDateTime, pickupAddress, city, description
+    });
+
+    btn.classList.remove('btn-loading'); btn.disabled = false;
+
+    if (ok && data.success) {
+      showAlert('donation-alert', '🎉 Donation added successfully! NGOs can now see and request it.', 'success');
+      resetDonationForm();
+      setTimeout(() => showSection('my-donations', document.querySelector('[onclick*=my-donations]')), 2000);
+    } else {
+      showAlert('donation-alert', data.message || 'Failed to add donation.', 'error');
+    }
+  });
+
+  function resetDonationForm() {
+    document.getElementById('donation-form').reset();
+    document.getElementById('donation-alert').style.display = 'none';
+  }
+
+  // Hamburger for sidebar on mobile
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

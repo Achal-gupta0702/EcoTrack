@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTrack – Smart Food Waste Reduction & Redistribution Platform</title>
+  <meta name="description" content="EcoTrack connects food donors with NGOs and volunteers to redistribute surplus food and reduce waste. SDG 12.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a class="nav-brand" href="index.html">
+    <div class="brand-icon">🌱</div>
+    <span><span class="brand-eco">Eco</span>Track</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="pages/about.html">About</a>
+    <a href="pages/how-it-works.html">How It Works</a>
+    <a href="pages/impact-dashboard.html">Impact</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-user-info" id="nav-user-info" style="display:none">
+      <div class="nav-avatar" id="nav-avatar">U</div>
+      <span id="nav-user-name" style="color:var(--gray-300);font-size:0.85rem;font-weight:600"></span>
+    </div>
+    <a href="pages/dashboard-redirect.html" class="btn btn-secondary btn-sm" id="nav-dashboard-btn" style="display:none">Dashboard</a>
+    <button class="btn btn-danger btn-sm" id="nav-logout-btn" style="display:none" onclick="logout()">Logout</button>
+    <a href="pages/login.html" class="btn btn-secondary btn-sm" id="nav-login-btn">Login</a>
+    <a href="pages/register.html" class="btn btn-primary btn-sm" id="nav-register-btn">Get Started</a>
+  </div>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">🏠 Home</a>
+  <a href="pages/about.html">ℹ️ About</a>
+  <a href="pages/how-it-works.html">⚙️ How It Works</a>
+  <a href="pages/impact-dashboard.html">📊 Impact</a>
+  <a href="pages/login.html" id="m-login">🔐 Login</a>
+  <a href="pages/register.html" id="m-register">📝 Register</a>
+  <a href="pages/dashboard-redirect.html" id="m-dashboard" style="display:none">📋 Dashboard</a>
+  <a href="#" id="m-logout" style="display:none" onclick="logout()">🚪 Logout</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      🌍 Aligned with UN SDG 12 — Responsible Consumption
+    </div>
+    <h1>Don't Waste Food.<br><span class="highlight">Share It.</span><br>Create Impact.</h1>
+    <p>EcoTrack bridges the gap between food surplus and food scarcity. Connect donors, NGOs, and volunteers to redirect edible food from waste to plates.</p>
+    <div class="hero-actions">
+      <a href="pages/register.html" class="btn btn-primary btn-xl">Start Donating Free</a>
+      <a href="pages/how-it-works.html" class="btn btn-outline-white btn-xl">See How It Works</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-stat-pill">
+      <div class="pill-value" id="hero-stat-kg">0</div>
+      <div class="pill-label">Kg Redistributed</div>
+    </div>
+    <div class="hero-stat-pill">
+      <div class="pill-value" id="hero-stat-donations">0</div>
+      <div class="pill-label">Donations Listed</div>
+    </div>
+    <div class="hero-stat-pill">
+      <div class="pill-value" id="hero-stat-meals">0</div>
+      <div class="pill-label">Meals Enabled</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== IMPACT BAR ===== -->
+<div class="impact-bar">
+  <div class="impact-bar-grid">
+    <div class="impact-item">
+      <div class="impact-number" data-count="0" id="stat-donations">0</div>
+      <div class="impact-label">Total Donations</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-number" data-count="0" id="stat-completed">0</div>
+      <div class="impact-label">Completed</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-number" data-count="0" id="stat-kg">0</div>
+      <div class="impact-label">KG Redistributed</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-number" data-count="0" id="stat-donors">0</div>
+      <div class="impact-label">Donors</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-number" data-count="0" id="stat-ngos">0</div>
+      <div class="impact-label">NGOs</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-number" data-count="0" id="stat-volunteers">0</div>
+      <div class="impact-label">Volunteers</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROBLEM SECTION ===== -->
+<section class="section section-light">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">🚨 The Problem</span>
+      <h2>Food Waste is a Global Crisis</h2>
+      <p>Every day, millions of kilograms of edible food are discarded while millions go hungry. This is both a humanitarian and environmental emergency.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">🗑️</div>
+        <h3>1/3 of Food is Wasted</h3>
+        <p>Approximately 1.3 billion tonnes of food is wasted globally every year — enough to feed 3 billion people.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌡️</div>
+        <h3>Climate Impact</h3>
+        <p>Food waste contributes to 8–10% of global greenhouse gas emissions, making it a major driver of climate change.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💸</div>
+        <h3>Economic Loss</h3>
+        <p>India alone wastes food worth ₹92,000 crore annually. Restaurants, hotels, and households are the top contributors.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🍽️</div>
+        <h3>Hunger Persists</h3>
+        <p>Over 820 million people worldwide face hunger while surplus food sits in landfills. The gap can be bridged.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏨</div>
+        <h3>Hospitality Waste</h3>
+        <p>Hotels, canteens, and events are among the largest contributors to preventable food waste — often daily.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌱</div>
+        <h3>The Solution Exists</h3>
+        <p>With better coordination between donors, NGOs, and volunteers, most surplus food can be redirected effectively.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">⚙️ How It Works</span>
+      <h2>Simple. Fast. Impactful.</h2>
+      <p>EcoTrack makes food redistribution effortless with a 4-step process.</p>
+    </div>
+    <div class="grid-4" style="margin-bottom:2rem">
+      <div class="feature-card" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:white">
+        <div class="step-number">1</div>
+        <div class="feature-icon" style="background:rgba(46,204,113,0.1);border-color:rgba(46,204,113,0.2)">🍱</div>
+        <h3 style="color:white">Donor Lists Food</h3>
+        <p style="color:rgba(255,255,255,0.6)">Restaurants, hotels, households list their surplus food with details, quantity, and pickup address.</p>
+      </div>
+      <div class="feature-card" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1)">
+        <div class="step-number">2</div>
+        <div class="feature-icon" style="background:rgba(46,204,113,0.1);border-color:rgba(46,204,113,0.2)">🤝</div>
+        <h3 style="color:white">NGO Requests</h3>
+        <p style="color:rgba(255,255,255,0.6)">Verified NGOs browse available donations, filter by location/category, and send pickup requests.</p>
+      </div>
+      <div class="feature-card" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1)">
+        <div class="step-number">3</div>
+        <div class="feature-icon" style="background:rgba(46,204,113,0.1);border-color:rgba(46,204,113,0.2)">🚗</div>
+        <h3 style="color:white">Volunteer Picks Up</h3>
+        <p style="color:rgba(255,255,255,0.6)">Community volunteers accept pickup tasks, collect food from donors, and deliver to NGOs.</p>
+      </div>
+      <div class="feature-card" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1)">
+        <div class="step-number">4</div>
+        <div class="feature-icon" style="background:rgba(46,204,113,0.1);border-color:rgba(46,204,113,0.2)">✅</div>
+        <h3 style="color:white">Impact Created</h3>
+        <p style="color:rgba(255,255,255,0.6)">Food reaches those who need it. Every step is tracked. Every donation creates measurable impact.</p>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <a href="pages/how-it-works.html" class="btn btn-primary btn-lg">See Detailed Process →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SDG SECTION ===== -->
+<section class="sdg-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">🇺🇳 United Nations SDGs</span>
+      <h2 style="color:white">Supporting Global Goals</h2>
+      <p style="color:rgba(255,255,255,0.65)">EcoTrack directly aligns with the UN Sustainable Development Goals to create lasting global impact.</p>
+    </div>
+    <div class="sdg-card">
+      <div class="sdg-badge-large">
+        <div class="sdg-num">12</div>
+        <div class="sdg-text">SDG 12</div>
+      </div>
+      <div class="sdg-content">
+        <h3>SDG 12: Responsible Consumption and Production</h3>
+        <p>EcoTrack directly addresses SDG 12 by reducing food waste at source and redistributing surplus food to communities in need. We help ensure sustainable consumption patterns across restaurants, hotels, canteens, events, and households.</p>
+        <div class="sdg-targets">
+          <span class="sdg-target">12.3 Halve food waste by 2030</span>
+          <span class="sdg-target">12.5 Reduce waste generation</span>
+          <span class="sdg-target">12.8 Sustainable lifestyle awareness</span>
+          <span class="sdg-target">SDG 2: Zero Hunger</span>
+          <span class="sdg-target">SDG 13: Climate Action</span>
+          <span class="sdg-target">SDG 17: Partnerships</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY ECOTRACK ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">💡 Why EcoTrack</span>
+      <h2>Built for Real Impact</h2>
+      <p>A purpose-built platform designed for the unique challenges of food redistribution in India.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Real-Time Status Tracking</h3>
+        <p>Track every donation from listing to delivery with 7-stage status updates. Complete transparency for all stakeholders.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Role-Based Access</h3>
+        <p>Separate, secure dashboards for Donors, NGOs, Volunteers, and Admins — each with tailored tools and views.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📍</div>
+        <h3>Location-Based Filtering</h3>
+        <p>NGOs can search and filter donations by city, food category, and availability to find the most relevant listings.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Impact Analytics</h3>
+        <p>Live impact dashboard showing kilograms redistributed, meals enabled, donations completed, and community growth.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Mobile Responsive</h3>
+        <p>Fully responsive design ensures volunteers and donors can use EcoTrack on any device, anywhere, anytime.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🆓</div>
+        <h3>100% Free Platform</h3>
+        <p>EcoTrack is completely free for all users. No subscription fees, no hidden costs. Just impact.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="section section-green" style="text-align:center">
+  <div class="container">
+    <h2 style="color:white;font-size:2.4rem;font-weight:900;margin-bottom:1rem">Ready to Make a Difference?</h2>
+    <p style="color:rgba(255,255,255,0.8);font-size:1.1rem;max-width:520px;margin:0 auto 2.5rem">Join hundreds of donors, NGOs, and volunteers already reducing food waste and creating community impact.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="pages/register.html?role=donor" class="btn btn-xl" style="background:white;color:var(--green-700);font-weight:700">🍱 Register as Donor</a>
+      <a href="pages/register.html?role=ngo" class="btn btn-xl btn-outline-white">🤝 Register as NGO</a>
+      <a href="pages/register.html?role=volunteer" class="btn btn-xl btn-outline-white">🚗 Register as Volunteer</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">🌱 EcoTrack</div>
+      <p>A smart food waste reduction and redistribution platform connecting donors, NGOs, and volunteers for a sustainable future.</p>
+      <div class="footer-sdg" style="margin-top:1rem">
+        <span class="sdg-mini">SDG 12</span>
+        <span style="font-size:0.8rem">Responsible Consumption & Production</span>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="pages/about.html">About Us</a></li>
+        <li><a href="pages/how-it-works.html">How It Works</a></li>
+        <li><a href="pages/impact-dashboard.html">Impact Dashboard</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Get Started</h4>
+      <ul>
+        <li><a href="pages/register.html?role=donor">Donate Food</a></li>
+        <li><a href="pages/register.html?role=ngo">NGO Registration</a></li>
+        <li><a href="pages/register.html?role=volunteer">Volunteer</a></li>
+        <li><a href="pages/login.html">Login</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Dashboards</h4>
+      <ul>
+        <li><a href="pages/donor-dashboard.html">Donor Dashboard</a></li>
+        <li><a href="pages/ngo-dashboard.html">NGO Dashboard</a></li>
+        <li><a href="pages/volunteer-dashboard.html">Volunteer Dashboard</a></li>
+        <li><a href="pages/admin-dashboard.html">Admin Dashboard</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 EcoTrack. Built for SDG 12 — Reducing Food Waste, Creating Impact.</span>
+    <span>Made with 💚 for a sustainable future</span>
+  </div>
+</footer>
+
+<div id="toast-container"></div>
+<script src="js/app.js"></script>
+<script>
+  // Load live stats
+  async function loadHomeStats() {
+    const res = await fetch('/api/impact');
+    if (!res.ok) return;
+    const { stats } = await res.json();
+    if (!stats) return;
+
+    // Hero pills
+    document.getElementById('hero-stat-kg').textContent = stats.foodRedistributed;
+    document.getElementById('hero-stat-donations').textContent = stats.totalDonations;
+    document.getElementById('hero-stat-meals').textContent = stats.mealsProvided;
+
+    // Impact bar
+    const fields = [
+      ['stat-donations', stats.totalDonations],
+      ['stat-completed', stats.completedDonations],
+      ['stat-kg', stats.foodRedistributed],
+      ['stat-donors', stats.donors],
+      ['stat-ngos', stats.ngos],
+      ['stat-volunteers', stats.volunteers]
+    ];
+    fields.forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) animateCount(el, parseFloat(val), 1500);
+    });
+  }
+
+  // Mobile menu auth sync
+  function syncMobileMenu() {
+    const user = getUser();
+    const token = localStorage.getItem('ecotrack_token');
+    const mLogin = document.getElementById('m-login');
+    const mRegister = document.getElementById('m-register');
+    const mDash = document.getElementById('m-dashboard');
+    const mLogout = document.getElementById('m-logout');
+    if (token && user) {
+      if (mLogin) mLogin.style.display = 'none';
+      if (mRegister) mRegister.style.display = 'none';
+      if (mDash) { mDash.style.display = 'block'; mDash.href = getDashboardUrl(user.role); }
+      if (mLogout) mLogout.style.display = 'block';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadHomeStats();
+    syncMobileMenu();
+    observeCounters();
+  });
+</script>
+</body>
+</html>

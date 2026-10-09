@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting... – EcoTrack</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--gray-50)">
+  <div style="text-align:center;padding:2rem">
+    <div style="font-size:3rem;margin-bottom:1rem">🌱</div>
+    <div class="loading-spinner" style="justify-content:center">
+      <div class="spinner"></div>
+      <span>Redirecting to your dashboard...</span>
+    </div>
+  </div>
+  <script src="../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('ecotrack_token');
+      const user = getUser();
+      if (token && user) {
+        window.location.href = getDashboardUrl(user.role);
+      } else {
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
+</body>
+</html>

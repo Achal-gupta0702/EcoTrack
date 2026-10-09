@@ -1,0 +1,51 @@
+[
+  {
+    "id": "admin-001",
+    "name": "Admin User",
+    "email": "admin@ecotrack.com",
+    "password": "$2a$10$TFKC//h7tAs1D8RYlQPBw.y3rtax1iI/..T7ig/aS8vFfs7wISj3a",
+    "role": "admin",
+    "phone": "9999999999",
+    "organization": "EcoTrack",
+    "city": "Mumbai",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "isActive": true
+  },
+  {
+    "id": "donor-001",
+    "name": "Green Kitchen Restaurant",
+    "email": "donor@ecotrack.com",
+    "password": "$2a$10$TFKC//h7tAs1D8RYlQPBw.y3rtax1iI/..T7ig/aS8vFfs7wISj3a",
+    "role": "donor",
+    "phone": "9876543210",
+    "organization": "Green Kitchen",
+    "city": "Mumbai",
+    "address": "123 MG Road, Mumbai",
+    "createdAt": "2024-01-05T00:00:00.000Z",
+    "isActive": true
+  },
+  {
+    "id": "ngo-001",
+    "name": "Feed The Future NGO",
+    "email": "ngo@ecotrack.com",
+    "password": "$2a$10$TFKC//h7tAs1D8RYlQPBw.y3rtax1iI/..T7ig/aS8vFfs7wISj3a",
+    "role": "ngo",
+    "phone": "9876500001",
+    "organization": "Feed The Future",
+    "city": "Mumbai",
+    "createdAt": "2024-01-06T00:00:00.000Z",
+    "isActive": true
+  },
+  {
+    "id": "volunteer-001",
+    "name": "Rahul Sharma",
+    "email": "volunteer@ecotrack.com",
+    "password": "$2a$10$TFKC//h7tAs1D8RYlQPBw.y3rtax1iI/..T7ig/aS8vFfs7wISj3a",
+    "role": "volunteer",
+    "phone": "9876500002",
+    "organization": "",
+    "city": "Mumbai",
+    "createdAt": "2024-01-07T00:00:00.000Z",
+    "isActive": true
+  }
+]

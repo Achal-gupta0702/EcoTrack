@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About EcoTrack – Smart Food Waste Reduction Platform</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <a class="nav-brand" href="../index.html">
+    <div class="brand-icon">🌱</div>
+    <span><span class="brand-eco">Eco</span>Track</span>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="about.html" class="active">About</a>
+    <a href="how-it-works.html">How It Works</a>
+    <a href="impact-dashboard.html">Impact</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-user-info" id="nav-user-info" style="display:none">
+      <div class="nav-avatar" id="nav-avatar">U</div>
+      <span id="nav-user-name" style="color:var(--gray-300);font-size:0.85rem;font-weight:600"></span>
+    </div>
+    <a href="#" class="btn btn-secondary btn-sm" id="nav-dashboard-btn" style="display:none">Dashboard</a>
+    <button class="btn btn-danger btn-sm" id="nav-logout-btn" style="display:none" onclick="logout()">Logout</button>
+    <a href="login.html" class="btn btn-secondary btn-sm" id="nav-login-btn">Login</a>
+    <a href="register.html" class="btn btn-primary btn-sm" id="nav-register-btn">Get Started</a>
+  </div>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../index.html">🏠 Home</a>
+  <a href="about.html">ℹ️ About</a>
+  <a href="how-it-works.html">⚙️ How It Works</a>
+  <a href="impact-dashboard.html">📊 Impact</a>
+  <a href="login.html">🔐 Login</a>
+  <a href="register.html">📝 Register</a>
+</div>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <h1>About EcoTrack</h1>
+  <p>We are on a mission to eliminate preventable food waste by building bridges between surplus food and communities in need.</p>
+</div>
+
+<!-- Mission Section -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2" style="align-items:center;gap:4rem">
+      <div>
+        <span class="section-tag">🎯 Our Mission</span>
+        <h2 style="font-size:2rem;font-weight:800;color:var(--gray-900);margin:0.75rem 0">Turning Surplus into Sustenance</h2>
+        <p style="color:var(--gray-600);line-height:1.8;margin-bottom:1.25rem">EcoTrack was built to solve a fundamental disconnect: millions of kilograms of perfectly edible food goes to waste every day while millions of people go hungry.</p>
+        <p style="color:var(--gray-600);line-height:1.8;margin-bottom:1.25rem">Our platform creates a verified, transparent ecosystem where restaurants, hotels, canteens, events, and households can list surplus food. Verified NGOs can browse, request, and coordinate pickup. Trained community volunteers complete the last-mile delivery.</p>
+        <p style="color:var(--gray-600);line-height:1.8">Every step is tracked. Every kilogram saved is measured. Every meal enabled is counted — because impact should be visible.</p>
+      </div>
+      <div>
+        <div class="stat-card" style="margin-bottom:1rem">
+          <div class="stat-icon green">🌍</div>
+          <div class="stat-info">
+            <div class="stat-value">1.3B</div>
+            <div class="stat-label">Tonnes of food wasted globally per year</div>
+          </div>
+        </div>
+        <div class="stat-card" style="margin-bottom:1rem">
+          <div class="stat-icon orange">🍽️</div>
+          <div class="stat-info">
+            <div class="stat-value">820M</div>
+            <div class="stat-label">People facing hunger worldwide</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">💰</div>
+          <div class="stat-info">
+            <div class="stat-value">₹92K Cr</div>
+            <div class="stat-label">Food wasted annually in India</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SDG Alignment -->
+<section class="section section-light">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">🇺🇳 SDG Alignment</span>
+      <h2>Built for the Goals that Matter</h2>
+      <p>EcoTrack is purpose-built to contribute to the United Nations Sustainable Development Goals.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:linear-gradient(135deg,#fef9c3,#fef08a);font-size:1.5rem">
+          <span style="font-weight:900;color:#854d0e">12</span>
+        </div>
+        <h3>SDG 12 — Responsible Consumption</h3>
+        <p>Directly reducing food waste at source. Building sustainable consumption habits across restaurants, hotels, households, and events.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);font-size:1.5rem">
+          <span style="font-weight:900;color:#166534">2</span>
+        </div>
+        <h3>SDG 2 — Zero Hunger</h3>
+        <p>Redirecting surplus food to NGOs serving food-insecure communities. Turning waste into nutrition for those who need it most.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);font-size:1.5rem">
+          <span style="font-weight:900;color:#1e3a8a">13</span>
+        </div>
+        <h3>SDG 13 — Climate Action</h3>
+        <p>Food waste in landfills produces methane — a potent greenhouse gas. Redistribution directly reduces emissions and supports climate goals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">💡 Our Values</span>
+      <h2>What Drives Us</h2>
+      <p>Four core principles guide everything we build and every partnership we form.</p>
+    </div>
+    <div class="grid-4">
+      <div style="text-align:center;padding:1.5rem">
+        <div style="font-size:2.5rem;margin-bottom:1rem">🤝</div>
+        <h3 style="color:white;font-weight:700;margin-bottom:0.5rem">Community First</h3>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.875rem">Every feature is built to serve real communities — donors, NGOs, volunteers, and the people they help.</p>
+      </div>
+      <div style="text-align:center;padding:1.5rem">
+        <div style="font-size:2.5rem;margin-bottom:1rem">🔍</div>
+        <h3 style="color:white;font-weight:700;margin-bottom:0.5rem">Full Transparency</h3>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.875rem">Every donation is tracked with complete status history. No black boxes, no guesswork.</p>
+      </div>
+      <div style="text-align:center;padding:1.5rem">
+        <div style="font-size:2.5rem;margin-bottom:1rem">⚡</div>
+        <h3 style="color:white;font-weight:700;margin-bottom:0.5rem">Speed & Efficiency</h3>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.875rem">Food has a shelf life. Our platform enables rapid coordination between all parties to minimize time from listing to delivery.</p>
+      </div>
+      <div style="text-align:center;padding:1.5rem">
+        <div style="font-size:2.5rem;margin-bottom:1rem">📊</div>
+        <h3 style="color:white;font-weight:700;margin-bottom:0.5rem">Measurable Impact</h3>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.875rem">We measure everything — kilograms saved, meals enabled, CO₂ avoided. Impact you can see and share.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">👥 Our Team</span>
+      <h2>Built by Passionate People</h2>
+      <p>EcoTrack is a student-led sustainability initiative developed as part of a B.Tech CSE internship project.</p>
+    </div>
+    <div class="grid-4">
+      <div class="team-card">
+        <div class="team-avatar">👨‍💻</div>
+        <h4>Full Stack Developer</h4>
+        <p>Node.js · Express.js · JavaScript</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🎨</div>
+        <h4>UI/UX Designer</h4>
+        <p>CSS3 · Responsive Design · UX</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">⚙️</div>
+        <h4>Backend Engineer</h4>
+        <p>REST APIs · Data Management</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">📊</div>
+        <h4>Impact Analyst</h4>
+        <p>SDG Research · Data Analytics</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-green" style="text-align:center">
+  <div class="container">
+    <h2 style="color:white;font-size:2rem;font-weight:900;margin-bottom:1rem">Join the EcoTrack Community</h2>
+    <p style="color:rgba(255,255,255,0.8);max-width:500px;margin:0 auto 2rem">Be part of the solution. Register today as a donor, NGO, or volunteer and start making real, measurable impact.</p>
+    <a href="register.html" class="btn btn-xl" style="background:white;color:var(--green-700);font-weight:700">Register Now — It's Free</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">🌱 EcoTrack</div>
+      <p>A smart food waste reduction and redistribution platform connecting donors, NGOs, and volunteers.</p>
+    </div>
+    <div class="footer-col"><h4>Platform</h4><ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="how-it-works.html">How It Works</a></li>
+      <li><a href="impact-dashboard.html">Impact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Get Started</h4><ul>
+      <li><a href="register.html">Register</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="#">info@ecotrack.com</a></li>
+      <li><a href="#">support@ecotrack.com</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 EcoTrack. Supporting SDG 12 — Responsible Consumption and Production.</span>
+    <span>Made with 💚 for a sustainable future</span>
+  </div>
+</footer>
+
+<div id="toast-container"></div>
+<script src="../js/app.js"></script>
+</body>
+</html>
